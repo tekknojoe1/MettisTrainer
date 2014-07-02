@@ -1,0 +1,1 @@
+copy assets\fpd_identity.pair1.cfg assets\fpd_identity.cfg

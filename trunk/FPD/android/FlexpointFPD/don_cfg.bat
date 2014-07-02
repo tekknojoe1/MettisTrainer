@@ -1,0 +1,1 @@
+copy assets\fpd_identity.don.cfg assets\fpd_identity.cfg
