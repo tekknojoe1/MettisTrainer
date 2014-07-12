@@ -38,6 +38,10 @@
             android:label="@string/title_activity_record"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.flexpoint.fpd.AnalyzeActivity"
+            android:label="@string/title_activity_analyze" >
+        </activity>
     </application>
 
 </manifest>
