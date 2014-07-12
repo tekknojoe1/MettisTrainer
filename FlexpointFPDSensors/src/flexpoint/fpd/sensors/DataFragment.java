@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 public class DataFragment extends Fragment {
 	private TextView textViewState;
+	private TextView textViewVersion;
 	//private plotDynamic plot1;
 	private FastPlot plot1;
 	private FastPlot plot2;
@@ -19,7 +20,8 @@ public class DataFragment extends Fragment {
 	private FrameLayout frame1;
 	private FrameLayout frame2;
 	private FrameLayout frame3;
-	private String stateText = "Waiting for device to connect...";		
+	private String stateText = "Waiting for device to connect...";
+	private String versionText = "";
 	
 	public DataFragment() {		
 	}
@@ -47,6 +49,7 @@ public class DataFragment extends Fragment {
 			);
 		
 		textViewState = (TextView)rootView.findViewById(R.id.textViewState);
+		textViewVersion = (TextView)rootView.findViewById(R.id.textViewVersion);
 		
 		frame1 = (FrameLayout)rootView.findViewById(R.id.frameLayoutSens1);
 		frame2 = (FrameLayout)rootView.findViewById(R.id.frameLayoutSens2);
@@ -67,6 +70,7 @@ public class DataFragment extends Fragment {
 		frame3.addView(plot3, lp);
 		
 		textViewState.setText(stateText);
+		textViewVersion.setText(versionText);
 		
 		return rootView;
 	}
@@ -81,6 +85,11 @@ public class DataFragment extends Fragment {
 	public void setStateText(String text) {
 		stateText = text;
 		textViewState.setText(stateText);
+	}
+	
+	public void setVersionText(String text) {
+		versionText = text;
+		textViewVersion.setText(versionText);
 	}
 	
 	public void setSensorData(int fs0, int fs1, int fs2) {

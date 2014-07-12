@@ -21,6 +21,7 @@ public class DeviceFragment extends Fragment {
 		public void onSensor(
 			int fs0, int fs1, int fs2, int fs3, int fs4
 			);
+		public void onVersion(String versionString);
 	}
 	
 	private String  btAddress;
@@ -152,6 +153,7 @@ public class DeviceFragment extends Fragment {
 
 		@Override
 		public void onAIOData(
+			final long timeStamp,
 			final int fs0,
 			final int fs1,
 			final int fs2,
@@ -182,6 +184,19 @@ public class DeviceFragment extends Fragment {
 			boolean isCharging
 			)
 		{	
+		}
+
+		@Override
+		public void onInfo(final String versionString) {
+			handler.post(new Runnable() {
+				public void run() {
+					if (activityCallbacks != null) {						
+						activityCallbacks.onVersion(
+							versionString
+							);
+					}
+				}
+			});
 		}
 		
 	}

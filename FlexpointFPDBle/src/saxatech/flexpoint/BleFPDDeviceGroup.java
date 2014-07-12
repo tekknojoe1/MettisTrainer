@@ -298,6 +298,7 @@ public class BleFPDDeviceGroup {
 		}
 		@Override
 		public synchronized void onAIOData(
+			final long timeStamp,
 			final int fs0, final int fs1, final int fs2,
 			final int fs3, final int fs4,
 			final int acX, final int acY, final int acZ,
@@ -327,7 +328,7 @@ public class BleFPDDeviceGroup {
 										
 					dataCallback.onData(
 						deviceType,
-						0,
+						timeStamp,
 						fs0, fs1, fs2, fs3, fs4,
 						acX, acY, acZ,
 						mgX, mgY, mgZ
@@ -350,6 +351,10 @@ public class BleFPDDeviceGroup {
 			boolean isCharging
 			)
 		{
+			
+		}
+		@Override
+		public void onInfo(String versionString) {			
 			
 		}
 	}

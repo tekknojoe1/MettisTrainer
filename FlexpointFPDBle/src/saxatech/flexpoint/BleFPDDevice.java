@@ -38,9 +38,14 @@ public class BleFPDDevice {
 	
 	public interface DataCallback {
 		public void onAIOData(
+			long timeStamp,
 			int fs0, int fs1, int fs2, int fs3, int fs4,
 			int acX, int acY, int acZ,
 			int mgX, int mgY, int mgZ
+			);
+		
+		public void onInfo(
+			String versionString
 			);
 		
 		public void onBatteryStatus(
@@ -172,6 +177,9 @@ public class BleFPDDevice {
 	private static final UUID serviceUUID =
 		BleFPDUuids.serviceUUID;	
 	
+	private static final UUID characteristicVersionUUID =
+		BleFPDUuids.charVersionUUID;
+	
 	private static final UUID characteristicStatusUUID =
 		BleFPDUuids.charStatusUUID;
 	
@@ -180,6 +188,7 @@ public class BleFPDDevice {
 	
 	private static final UUID characteristicLogDataUUID =
 		BleFPDUuids.charLogDataUUID;
+	
 	
 	private class BleDeviceGattCallback extends BluetoothGattCallback {
 		private final ConnectCallback connectCallback;
@@ -266,16 +275,18 @@ public class BleFPDDevice {
 		private final static int APP_SEN_MAG  = 1;
 		private final static int APP_SEN_PSOC = 2;
 		
-		private final static int APP_PSOC_S0_REG_OFFSET = 0x80;
+		//private final static int APP_PSOC_S0_REG_OFFSET = 0x80;
 		private final static int APP_PSOC_S0_REG_GAIN   = 0x81;
-		private final static int APP_PSOC_S1_REG_OFFSET = 0x82;
+		//private final static int APP_PSOC_S1_REG_OFFSET = 0x82;
 		private final static int APP_PSOC_S1_REG_GAIN   = 0x83;
-		private final static int APP_PSOC_S2_REG_OFFSET = 0x84;
+		//private final static int APP_PSOC_S2_REG_OFFSET = 0x84;
 		private final static int APP_PSOC_S2_REG_GAIN   = 0x85;
 		
 		private final static int APP_DEF_GAIN = 10;
 		
 		private int state;
+		private long startTime;
+		private String versionStr = "<unknown>";
 		
 		private void startSetup(BluetoothGatt gatt) {
 			try {
@@ -288,7 +299,14 @@ public class BleFPDDevice {
 			LogD("start setup");
 			state = STATE_SET_S0_GAIN;
 			setupGain(gatt, APP_PSOC_S0_REG_GAIN, APP_DEF_GAIN);
-			//setupSensors(gatt);		
+		}
+		
+		private void readVersion(BluetoothGatt gatt) {
+			BluetoothGattCharacteristic c =
+				bluetoothGattService.getCharacteristic(
+					characteristicVersionUUID
+					);
+			gatt.readCharacteristic(c);
 		}
 		
 		private void setupSensors(BluetoothGatt gatt) {
@@ -351,7 +369,9 @@ public class BleFPDDevice {
 			)
 		{
 			if (status != BluetoothGatt.GATT_SUCCESS) {
-				LogE("onCharacteristicWrite failed: " + status);
+				LogE("onCharacteristicWrite failed: " + status +
+					 "(state var: " + state + ")"
+					 );
 				final int updateError = status == FW_GATT_INVALID_STATE ?
 					CONNECT_ERROR_BAD_STATE : CONNECT_ERROR_IO;
 				onConnectFailed(updateError);
@@ -378,7 +398,8 @@ public class BleFPDDevice {
 				break;
 			case STATE_SETUP_SENSORS:
 				LogD("STATE_SETUP_SENSORS - ok");
-				state = STATE_DONE;				
+				state = STATE_DONE;
+				readVersion(gatt);
 				onConnected();				
 				break;
 			case STATE_DONE:
@@ -386,17 +407,17 @@ public class BleFPDDevice {
 			}
 		}
 				
-		private long startTime;
-				
 		public void onCharacteristicChanged(
 			BluetoothGatt gatt,
 			BluetoothGattCharacteristic characteristic
 			)
 		{
-			// FIXME: try this in a thread instead...			
+			// FIXME: try this in a thread instead...
+			final long timeStamp = System.nanoTime(); 
+			
 			boolean readStatus = false;
 			if (startTime == 0) {
-				startTime = System.nanoTime();
+				startTime = timeStamp;
 				readStatus = true;
 			} else {
 				final long endTime = System.nanoTime();
@@ -433,7 +454,7 @@ public class BleFPDDevice {
 					if (setSize > length)
 						break;
 					
-					process8BitSensor(data, pos, setSize);
+					process8BitSensor(timeStamp, data, pos, setSize);
 				}
 				pos    += setSize;
 				length -= setSize;
@@ -442,7 +463,7 @@ public class BleFPDDevice {
 		
 		private int[] sensor_buf = new int[5];
 		
-		private void process8BitSensor(byte[] data, int offset, int length) {
+		private void process8BitSensor(long timeStamp, byte[] data, int offset, int length) {
 			// remove the header
 			++offset;
 			--length;
@@ -457,6 +478,7 @@ public class BleFPDDevice {
 				sensor_buf[i] = 0;
 			}
 			dataCallback.onAIOData(
+				timeStamp,
 				sensor_buf[0],
 				sensor_buf[1],
 				sensor_buf[2],
@@ -475,16 +497,30 @@ public class BleFPDDevice {
 				LogE("onCharacteristicRead failed: " + status);
 				return;
 			}
-			if (!characteristicStatusUUID.equals(characteristic.getUuid()))
-				return;
-			
-			final byte[] response = characteristic.getValue();
-			final int batteryLevel   = (int)response[4] & 0xff;
-			final boolean isCharging = ((int)response[5] & 0x02) == 0x02;
-			
-			dataCallback.onBatteryStatus(
-				batteryLevel, maxBatteryLevel, isCharging
-				);
+			if (characteristicStatusUUID.equals(characteristic.getUuid())) {
+				final byte[] response = characteristic.getValue();
+				final int batteryLevel   = (int)response[4] & 0xff;
+				final boolean isCharging = ((int)response[5] & 0x02) == 0x02;
+				
+				dataCallback.onBatteryStatus(
+					batteryLevel, maxBatteryLevel, isCharging
+					);
+				return;				
+			}
+			if (characteristicVersionUUID.equals(characteristic.getUuid())) {
+				final byte[] response = characteristic.getValue();
+				int verMajor  =  (int)response[0] & 0xff;
+				int verMinor  =  (int)response[1] & 0xff;
+				int verBuild  = ((int)response[3] & 0xff) << 8;
+				    verBuild |=  (int)response[2] & 0xff;
+				
+				versionStr = 
+					""  + verMajor +
+					"." + verMinor +
+					"." + verBuild;
+				
+				dataCallback.onInfo(versionStr);
+			}
 		}
 				
 		private void onConnected() {

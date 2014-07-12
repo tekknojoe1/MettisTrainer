@@ -92,10 +92,8 @@ public class MainActivity extends Activity
 
 	@Override
 	public void onDiscovered(BleFPDIdentity identity) {		
-		Intent intent = new Intent(MainActivity.this, DataActivity.class);
-		Bundle b = new Bundle();
-		b.putParcelable("Identity", identity);
-		intent.putExtras(b);
+		Intent intent = new Intent(MainActivity.this, DataActivity.class);		
+		intent.putExtras(identity.makeIntoBundle());
 		startActivity(intent);
 		finish();
 	}

@@ -114,4 +114,10 @@ public class DataActivity extends Activity implements DeviceFragment.ActivityCal
 		//Log.i("DATA", data);
 		dataFragment.setSensorData(fs0, fs1, fs2);
 	}
+
+	@Override
+	public void onVersion(String versionString) {
+		dataFragment.setVersionText(versionString);
+		
+	}
 }
