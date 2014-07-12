@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -106,7 +107,17 @@ public class BleFPDIdentity implements Parcelable {
 			public BleFPDIdentity[] newArray(int size) {
 				return new BleFPDIdentity[size];
 			}
-		};
+	};
+	
+	public Bundle makeIntoBundle() {
+		Bundle b = new Bundle();
+		b.putParcelable("Identity", this);
+		return b;
+	}
+	
+	public static BleFPDIdentity getFromBundle(Bundle b) {
+		return b.getParcelable("Identity");
+	}
 	
 	public static BleFPDIdentity loadFromJSON(Context context) {
 		return loadFromJSON(context, CONFIG_FNAME);

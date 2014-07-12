@@ -16,6 +16,14 @@
         android:layout_alignParentTop="true"
         android:text="Waiting for device to connect..."
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textViewVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewState"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
     
     <FrameLayout
         android:id="@+id/frameLayoutSens1"
@@ -23,8 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textViewState"
-        android:layout_marginTop="8dp" >
+        android:layout_below="@+id/textViewVersion"
+        >
     </FrameLayout>
     
     <FrameLayout

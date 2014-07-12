@@ -24,9 +24,18 @@ public class DeviceFragment extends Fragment {
 		
 		public void onSensor(
 			int deviceType,
+			long timeStamp,
 			int fs0, int fs1, int fs2
 			);
 	}
+	
+	private String leftShoeAddress;
+	private String rightShoeAddress;
+	private String clubAddress;
+	private ActivityCallbacks activityCallbacks;
+	private Handler handler;
+	private BleFPDDeviceGroup bleDevices;
+	private boolean logData;
 	
 	public void setDevices(
 		BleFPDIdentity identity
@@ -126,17 +135,13 @@ public class DeviceFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		close();
+	}
+	
+	public void close() {
 		if (bleDevices != null)
 			bleDevices.close();
 	}
-	
-	private String leftShoeAddress;
-	private String rightShoeAddress;
-	private String clubAddress;
-	private ActivityCallbacks activityCallbacks;
-	private Handler handler;
-	private BleFPDDeviceGroup bleDevices;
-	private boolean logData;
 	
 	private void failedInit(final String error) {
 		handler.post(new Runnable() {
@@ -185,7 +190,7 @@ public class DeviceFragment extends Fragment {
 		{
 			if (activityCallbacks == null)
 				return;
-			activityCallbacks.onSensor(deviceType, fs0, fs1, fs2);
+			activityCallbacks.onSensor(deviceType, timeStamp, fs0, fs1, fs2);
 		}
 		@Override
 		public void onBatteryStatus(int deviceType, int batteryLevel,

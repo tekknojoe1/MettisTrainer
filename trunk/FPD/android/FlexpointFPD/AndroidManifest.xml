@@ -33,6 +33,11 @@
             android:label="@string/title_activity_data"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.flexpoint.fpd.RecordActivity"
+            android:label="@string/title_activity_record"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
