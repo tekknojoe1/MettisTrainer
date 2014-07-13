@@ -44,6 +44,20 @@ public class MainActivity extends Activity
 				.commit();
 		}
 		
+		if (BleFPDIdentity.needsPairingFromJSON(this)) {
+			Preferences prefs = new Preferences(this);
+			if (!prefs.isPaired()) {
+				Intent intent = new Intent(this, PairingActivity.class);
+				Bundle b = new Bundle();
+				b.putBoolean("singlePair", false);
+				b.putBoolean("pairLeft", true);
+				intent.putExtras(b);
+				startActivity(intent);
+				finish();
+				return;
+			}
+		}
+		
 		discoveryFragment = (DiscoveryFragment)
 			fm.findFragmentByTag(DISCOVERY_FRAGMENT);
 		
@@ -69,6 +83,14 @@ public class MainActivity extends Activity
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			Log.i("DATA", "hello!!!!");
+			Intent intent = new Intent(this, PairingActivity.class);
+			Bundle b = new Bundle();
+			b.putBoolean("singlePair", false);
+			b.putBoolean("pairLeft", true);
+			intent.putExtras(b);
+			startActivity(intent);
+			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

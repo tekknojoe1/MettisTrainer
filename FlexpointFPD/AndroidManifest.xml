@@ -42,6 +42,10 @@
             android:name="com.flexpoint.fpd.AnalyzeActivity"
             android:label="@string/title_activity_analyze" >
         </activity>
+        <activity
+            android:name="com.flexpoint.fpd.PairingActivity"
+            android:label="@string/title_activity_pairing" >
+        </activity>
     </application>
 
 </manifest>
