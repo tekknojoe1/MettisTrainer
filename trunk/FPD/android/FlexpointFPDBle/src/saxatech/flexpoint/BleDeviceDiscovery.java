@@ -56,6 +56,19 @@ public class BleDeviceDiscovery {
 		isScanning = bluetoothAdapter.startLeScan(bleScan);
 		return isScanning;
 	}
+	public boolean startWithExcludedAddresses(
+		ArrayList<String> excludedAddresses
+		)
+	{
+		if (isScanning)
+			return false;
+		
+		bleScan = new BleScan();
+		bleScan.setExcludedAddresses(excludedAddresses);
+		isScanning = bluetoothAdapter.startLeScan(bleScan);
+		return isScanning;
+	}
+	
 	public void stop() {
 		if (!isScanning)
 			return;
@@ -70,14 +83,26 @@ public class BleDeviceDiscovery {
 	private class BleScan implements BluetoothAdapter.LeScanCallback {		
 		private final Set<String> foundAddressMap = new HashSet<String>();
 		private final Set<String> matchedAddressMap = new HashSet<String>();
+		private final Set<String> ignoredAddressMap = new HashSet<String>();
 		private final ArrayList<DeviceInfo> deviceInfoList = new ArrayList<DeviceInfo>();
 		private boolean allDevicesMatched; 
 		
 		public BleScan() {			
 		}
-		public BleScan(ArrayList<String> bluetoothAddressMatchList) {
+		public BleScan(
+			ArrayList<String> bluetoothAddressMatchList
+			)
+		{
 			for (String address : bluetoothAddressMatchList)
 				matchedAddressMap.add(address);
+		}
+		
+		public void setExcludedAddresses(
+			ArrayList<String> ignoredAddresses
+			)
+		{
+			for (String address : ignoredAddresses)
+				ignoredAddressMap.add(address);
 		}
 				
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -87,10 +112,12 @@ public class BleDeviceDiscovery {
 			final String name = device.getName();
 			final String address = device.getAddress();
 			
-			if (foundAddressMap.add(address)) {
-				discoveryCallback.onDeviceFound(
-					name, address, device
-				);
+			if (foundAddressMap.add(address)) {				
+				if (!ignoredAddressMap.contains(address)) {				
+					discoveryCallback.onDeviceFound(
+						name, address, device
+					);
+				}
 			}
 			if (matchedAddressMap.contains(address)) {
 				DeviceInfo deviceInfo = new DeviceInfo();
