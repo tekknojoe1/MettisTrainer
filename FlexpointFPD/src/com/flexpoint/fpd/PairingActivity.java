@@ -92,7 +92,7 @@ public class PairingActivity extends Activity
 
 	@Override
 	public void onRightSelected(String btAddress) {		
-		BleFPDIdentity.setPairedLeft(this, btAddress);
+		BleFPDIdentity.setPairedRight(this, btAddress);
 		prefs.setPaired(true);
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
