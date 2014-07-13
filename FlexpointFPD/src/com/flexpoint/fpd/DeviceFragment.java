@@ -24,7 +24,7 @@ public class DeviceFragment extends Fragment {
 		
 		public void onSensor(
 			int deviceType,
-			long timeStamp,
+			long timeStampNsec,
 			int fs0, int fs1, int fs2
 			);
 	}

@@ -15,6 +15,10 @@ public class SlideDirector {
 		gestureDetector = new GestureDetector(new MultiDetector());
 	}
 	
+	public static void setFirstActivity() {
+		currentActivity = 0;
+	}
+	
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
@@ -26,17 +30,31 @@ public class SlideDirector {
 		this.onSlideListener = onSlideListener;
 	}
 	
+	public void slideLeft() {
+		if (onSlideListener != null) {
+        	if (++currentActivity >= activities.length)
+        		currentActivity = 0;
+        	onSlideListener.onSwipeLeft(activities[currentActivity]);
+        }
+	}
+	public void slideRight() {
+		if (onSlideListener != null) {
+        	if (--currentActivity < 0)
+        		currentActivity = activities.length-1;
+        	onSlideListener.onSwipeRight(activities[currentActivity]);
+        }
+	}
+	
 	private static Class<?> activities[] = {
-		DataActivity.class, RecordActivity.class//Slide2Activity.class,
-		//Slide3Activity.class, //Slide4Activity.class,
-		//Slide5Activity.class, //Slide6Activity.class,
-		//Slide7Activity.class, //Slide8Activity.class,
-		//Slide9Activity.class		
+		DataActivity.class, RecordActivity.class,
+		AnalyzeActivity.class
 	};
 	private static int currentActivity = 0;	
 	private final GestureDetector gestureDetector;
 	private OnSlideListener onSlideListener;
 	private boolean enabled;
+	
+	
 	
 	private class MultiDetector extends SimpleOnGestureListener {
 		private static final int SWIPE_MIN_DISTANCE = 120;
@@ -46,11 +64,7 @@ public class SlideDirector {
 			if (!enabled)
 				return true;
 			
-			if (onSlideListener != null) {
-            	if (++currentActivity >= activities.length)
-            		currentActivity = 0;
-            	onSlideListener.onSwipeLeft(activities[currentActivity]);
-            }
+			slideLeft();
 			return true;
 		}
 		
@@ -62,18 +76,10 @@ public class SlideDirector {
 				
 	            // right to left swipe
 	            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE) {
-	                if (onSlideListener != null) {
-	                	if (++currentActivity >= activities.length)
-	                		currentActivity = 0;
-	                	onSlideListener.onSwipeLeft(activities[currentActivity]);
-	                }
+	                slideLeft();
 	            	
 	            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE) {
-	                if (onSlideListener != null) {
-	                	if (--currentActivity < 0)
-	                		currentActivity = activities.length-1;
-	                	onSlideListener.onSwipeRight(activities[currentActivity]);
-	                }
+	                slideRight();
 	            }
 	        } catch (Exception e) {
 	            // nothing
