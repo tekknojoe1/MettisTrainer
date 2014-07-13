@@ -1,18 +1,21 @@
 package com.flexpoint.fpd;
 
+import saxatech.flexpoint.BleFPDIdentity;
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 
-public class AnalyzeActivity extends Activity {
-
+public class AnalyzeActivity extends Activity {	
+	private BleFPDIdentity identity;
+	private SlideDirector slideDirector;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -20,10 +23,24 @@ public class AnalyzeActivity extends Activity {
 
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+				.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		Bundle b = getIntent().getExtras();
+		identity = BleFPDIdentity.getFromBundle(b);
+		
+		slideDirector = new SlideDirector();
+		slideDirector.setOnSlideListener(new OnSlideListener());
+		slideDirector.setEnabled(true);
+		
+		SensorGraphData graphData = new SensorGraphData();
+		StaticRecordBuffer.analyzeData(graphData);
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		return slideDirector.onTouchEvent(ev);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -42,6 +59,23 @@ public class AnalyzeActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private class OnSlideListener implements SlideDirector.OnSlideListener {
+		public void onSwipeLeft(Class<?> nextActivity) {
+			Intent intent = new Intent(AnalyzeActivity.this, nextActivity);
+			intent.putExtras(identity.makeIntoBundle());
+			startActivity(intent);
+			finish();
+			overridePendingTransition(R.anim.fade, R.anim.hold);
+		}
+		public void onSwipeRight(Class<?> nextActivity) {
+			Intent intent = new Intent(AnalyzeActivity.this, nextActivity);
+			intent.putExtras(identity.makeIntoBundle());
+			startActivity(intent);
+			finish();
+			overridePendingTransition(R.anim.fade, R.anim.hold);
+		}
 	}
 
 	/**

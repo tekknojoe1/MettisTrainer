@@ -131,7 +131,7 @@ public class RecordActivity extends Activity implements
 	@Override
 	public void onDisconnected() {
 		slideDirector.setEnabled(true);
-		recordActivityFragment.stopRecording();
+		stopRecording();
 		recordActivityFragment.enableControls(false);
 		recordActivityFragment.setDeviceStatusText("Disconnected");		
 	}
@@ -143,25 +143,25 @@ public class RecordActivity extends Activity implements
 	}
 
 	@Override
-	public void onSensor(int deviceType, long timeStamp, int fs0, int fs1, int fs2) {
+	public void onSensor(int deviceType, long timeStampNsec, int fs0, int fs1, int fs2) {
 		if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_LEFT_SHOE) {
 			if (canPlot)			
 				recordActivityFragment.setSensorDataLeft(fs0, fs1, fs2);
 			if (!recording)
 				return;
-			recordBuffer.storeLeft(timeStamp, fs0, fs1, fs2);
+			recordBuffer.storeLeft(timeStampNsec, fs0, fs1, fs2);
 		}
 		else if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_RIGHT_SHOE) {
 			if (canPlot)			
 				recordActivityFragment.setSensorDataRight(fs0, fs1, fs2);
 			if (!recording)
 				return;
-			recordBuffer.storeRight(timeStamp, fs0, fs1, fs2);
+			recordBuffer.storeRight(timeStampNsec, fs0, fs1, fs2);
 		}
 		else if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_CLUB) {
 			if (!recording)
 				return;
-			recordBuffer.storeClub(timeStamp, fs0, fs1, fs2);
+			recordBuffer.storeClub(timeStampNsec, fs0, fs1, fs2);
 		}
 	}
 
@@ -175,6 +175,12 @@ public class RecordActivity extends Activity implements
 	public void onButtonStop() {
 		recordActivityFragment.setProgressTime(0);
 		stopRecording();	
+	}
+	
+
+	@Override
+	public void onButtonAnalyze() {
+		slideDirector.slideLeft();
 	}
 
 	@Override

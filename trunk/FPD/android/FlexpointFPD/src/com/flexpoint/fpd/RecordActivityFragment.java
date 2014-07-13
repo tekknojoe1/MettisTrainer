@@ -26,6 +26,7 @@ public class RecordActivityFragment extends Fragment {
 	public static interface ActivityCallbacks {
 		public void onButtonRec();
 		public void onButtonStop();
+		public void onButtonAnalyze();
 		public void onPreRecordStart();
 		public void onRecordingStart();
 	}
@@ -45,6 +46,7 @@ public class RecordActivityFragment extends Fragment {
 	private FastPlot     plotSensLeft;
 	private FastPlot     plotSensRight;
 	private Button       buttonAnalyze;
+	private boolean      canShowAnalyze;
 	private boolean      recording;
 	private Timer        countDownTimer;
 			
@@ -107,6 +109,14 @@ public class RecordActivityFragment extends Fragment {
 			}
 		});
 		
+		buttonAnalyze.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (activityCallbacks != null)
+					activityCallbacks.onButtonAnalyze();
+			}
+		});
+		
 		return rootView;
 	}
 	
@@ -164,6 +174,7 @@ public class RecordActivityFragment extends Fragment {
 		
 		progressTime.setProgress(0);
 		buttonAnalyze.setVisibility(View.INVISIBLE);
+		canShowAnalyze = false;
 		
 		countDownTimer = new Timer();
 		countDownTimer.scheduleAtFixedRate(new TimerTask() {
@@ -184,11 +195,12 @@ public class RecordActivityFragment extends Fragment {
 							countTone.startTone(ToneGenerator.TONE_DTMF_D,500);
 							if (activityCallbacks != null)
 								activityCallbacks.onRecordingStart();
+							canShowAnalyze = true;
 						}
 						else {
 							if (countDown == 2) {
 								if (activityCallbacks != null)
-									activityCallbacks.onPreRecordStart();
+									activityCallbacks.onPreRecordStart();								
 							}
 							textCountDown.setText(String.valueOf(countDown));
 							countTone.startTone(ToneGenerator.TONE_DTMF_1,100);
@@ -209,7 +221,8 @@ public class RecordActivityFragment extends Fragment {
 		toggleRecord.setChecked(false);
 		textCountDown.setText("");		
 		setRecLight(REC_LIGHT_MODE_OFF);
-		buttonAnalyze.setVisibility(View.VISIBLE);
+		if (canShowAnalyze)
+			buttonAnalyze.setVisibility(View.VISIBLE);
 	}
 	
 	public void setSensorDataLeft(int fs0, int fs1, int fs2) {

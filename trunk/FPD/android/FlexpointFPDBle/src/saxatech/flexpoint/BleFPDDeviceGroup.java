@@ -33,7 +33,7 @@ public class BleFPDDeviceGroup {
 	public interface DataCallback {
 		public void onData(
 			int deviceType,
-			long timeStamp,
+			long timeStampNsec,
 			int fs0, int fs1, int fs2, int fs3, int fs4,
 			int acX, int acY, int acZ,
 			int mgX, int mgY, int mgZ
