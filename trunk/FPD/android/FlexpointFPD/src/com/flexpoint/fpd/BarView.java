@@ -5,11 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
-public class BarView extends ImageView {	
-	private final Context context;
+public class BarView extends ImageView {
 	private Paint barPaint;
 	private int width;
 	private int height;
@@ -27,7 +25,6 @@ public class BarView extends ImageView {
 	
 	public BarView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.context = context;
 		
 		barPaint = new Paint();
 		barPaint.setColor(barColor);

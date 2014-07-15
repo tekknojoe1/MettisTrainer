@@ -1,19 +1,20 @@
 package com.flexpoint.fpd;
 
-import java.util.concurrent.TimeUnit;
 
-import android.util.Log;
 
 public class SensorGraphData implements SensorDataSetHandler {
 	private static final int MAX_TIME_SHIFT_NSEC = 100 * 1000 * 1000;
 	
 	private final int sampleRate = 10;
-	private int samples;
 	SensorDataSet outLeft;
 	SensorDataSet outRight;
 	SensorDataSet outClub;
 		
-	public void HandleData(
+	public void pushData(SensorDataSetHandler dataHandler) {
+		dataHandler.onData(outLeft, outRight, outClub);
+	}
+	
+	public void onData(
 		SensorDataSet left, SensorDataSet right, SensorDataSet club
 		)
 	{	
@@ -39,6 +40,10 @@ public class SensorGraphData implements SensorDataSetHandler {
 		if (plotSamples == 0)
 			return;
 		
+		outLeft.sampleRate  = sampleRate;
+		outRight.sampleRate = sampleRate;
+		outClub.sampleRate  = sampleRate;
+		
 		final long sampleRateNsec = (long)sampleRate * 1000 * 1000;
 		
 		if (left.samplePos > 0) {
@@ -49,8 +54,11 @@ public class SensorGraphData implements SensorDataSetHandler {
 				outLeft.fs0[i] = left.fs0[(int)(i * scale)];
 				outLeft.fs1[i] = left.fs1[(int)(i * scale)];
 				outLeft.fs2[i] = left.fs2[(int)(i * scale)];
-			}	
+			}
 		}
+		outLeft.samplePos = plotSamples;
+		
+		
 		if (right.samplePos > 0) {
 			final double scale = (double)right.samplePos / plotSamples;
 			 
@@ -59,7 +67,8 @@ public class SensorGraphData implements SensorDataSetHandler {
 				outRight.fs0[i] = right.fs0[(int)(i * scale)];
 				outRight.fs1[i] = right.fs1[(int)(i * scale)];
 				outRight.fs2[i] = right.fs2[(int)(i * scale)];
-			}	
+			}
 		}
+		outRight.samplePos = plotSamples;
 	}
 }

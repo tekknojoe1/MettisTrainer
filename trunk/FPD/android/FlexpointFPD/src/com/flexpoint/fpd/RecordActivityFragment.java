@@ -49,7 +49,7 @@ public class RecordActivityFragment extends Fragment {
 	private boolean      canShowAnalyze;
 	private boolean      recording;
 	private Timer        countDownTimer;
-			
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -226,12 +226,12 @@ public class RecordActivityFragment extends Fragment {
 	}
 	
 	public void setSensorDataLeft(int fs0, int fs1, int fs2) {
-		final int p = Math.max((fs0+fs1)/2, fs2);
+		final int p = (((fs0+fs1)/2) + fs2)/2;
 		plotSensLeft.addData(p);
 		plotSensLeft.postInvalidate();
 	}
 	public void setSensorDataRight(int fs0, int fs1, int fs2) {
-		final int p = Math.max((fs0+fs1)/2, fs2);
+		final int p = (((fs0+fs1)/2) + fs2)/2;
 		plotSensRight.addData(p);
 		plotSensRight.postInvalidate();
 	}
