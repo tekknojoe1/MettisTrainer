@@ -18,8 +18,8 @@ public class StaticRecordBuffer {
 		return Buffer.pushSensorData(buffer.club,timeStampNsec, fs0, fs1, fs2);
 	}
 	
-	public static void analyzeData(SensorDataSetHandler handler) {
-		handler.HandleData(
+	public static void pushData(SensorDataSetHandler dataHandler) {
+		dataHandler.onData(
 			buffer.left, buffer.right, buffer.club
 			);
 	}

@@ -14,8 +14,6 @@ import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 
 public class RecordActivity extends Activity implements
@@ -31,6 +29,7 @@ public class RecordActivity extends Activity implements
 	private boolean recording;
 	private Handler handler;
 	private Timer recordTimer;
+	private StaticDynamicCalibration calibrator = new StaticDynamicCalibration();
 	private StaticRecordBuffer recordBuffer = new StaticRecordBuffer();
 	
 	@Override
@@ -69,19 +68,6 @@ public class RecordActivity extends Activity implements
 		slideDirector = new SlideDirector();
 		slideDirector.setOnSlideListener(new OnSlideListener());
 	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		return slideDirector.onTouchEvent(ev);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.record, menu);
-		return true;
-	}
 	
 	@Override
 	protected void onDestroy() {
@@ -89,17 +75,10 @@ public class RecordActivity extends Activity implements
 		if (recordTimer != null)
 			recordTimer.cancel();
 	}
-
+	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	public boolean onTouchEvent(MotionEvent ev) {
+		return slideDirector.onTouchEvent(ev);
 	}
 	
 	private class OnSlideListener implements SlideDirector.OnSlideListener {
@@ -149,6 +128,11 @@ public class RecordActivity extends Activity implements
 				recordActivityFragment.setSensorDataLeft(fs0, fs1, fs2);
 			if (!recording)
 				return;
+			calibrator.setLeftSensors(
+				calibrator.adjusted_left_fs0(),
+				calibrator.adjusted_left_fs1(),
+				calibrator.adjusted_left_fs2()
+				);
 			recordBuffer.storeLeft(timeStampNsec, fs0, fs1, fs2);
 		}
 		else if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_RIGHT_SHOE) {
@@ -156,6 +140,11 @@ public class RecordActivity extends Activity implements
 				recordActivityFragment.setSensorDataRight(fs0, fs1, fs2);
 			if (!recording)
 				return;
+			calibrator.setRightSensors(
+				calibrator.adjusted_right_fs0(),
+				calibrator.adjusted_right_fs1(),
+				calibrator.adjusted_right_fs2()
+				);
 			recordBuffer.storeRight(timeStampNsec, fs0, fs1, fs2);
 		}
 		else if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_CLUB) {

@@ -47,14 +47,8 @@ public class MainActivity extends Activity
 		if (BleFPDIdentity.needsPairingFromJSON(this)) {
 			Preferences prefs = new Preferences(this);
 			if (!prefs.isPaired()) {
-				Intent intent = new Intent(this, PairingActivity.class);
-				Bundle b = new Bundle();
-				b.putBoolean("singlePair", false);
-				b.putBoolean("pairLeft", true);
-				intent.putExtras(b);
-				startActivity(intent);
+				PairingActivity.startThisActivity(this);
 				finish();
-				return;
 			}
 		}
 		
@@ -82,14 +76,8 @@ public class MainActivity extends Activity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			Log.i("DATA", "hello!!!!");
-			Intent intent = new Intent(this, PairingActivity.class);
-			Bundle b = new Bundle();
-			b.putBoolean("singlePair", false);
-			b.putBoolean("pairLeft", true);
-			intent.putExtras(b);
-			startActivity(intent);
+		if (id == R.id.action_pairing) {
+			PairingActivity.startThisActivity(this);
 			finish();
 			return true;
 		}
