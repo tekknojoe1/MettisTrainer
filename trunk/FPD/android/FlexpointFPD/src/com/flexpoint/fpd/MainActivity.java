@@ -49,6 +49,7 @@ public class MainActivity extends Activity
 			if (!prefs.isPaired()) {
 				PairingActivity.startThisActivity(this);
 				finish();
+				return;
 			}
 		}
 		
