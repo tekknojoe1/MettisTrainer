@@ -78,6 +78,8 @@ public class AnalyzeActivity extends Activity {
 	public static class AnalyzeActivityFragment extends Fragment {
 		private Handler      handler;
 		private PlayGraph    playGraph;
+		private AveragedData averagedData;
+		private FootView     footView;
 		private FrameLayout  frameLayoutPlayGraph;
 		private TextView     textPlayTime;
 		private ToggleButton togglePlay;
@@ -95,12 +97,14 @@ public class AnalyzeActivity extends Activity {
 			
 			Context context = getActivity().getApplicationContext();
 			playGraph = new PlayGraph(context);
+			averagedData = new AveragedData();
 			
 			// fix up the data (fixed data in sensorGraphData)
 			SensorGraphData sensorGraphData = new SensorGraphData();
 			StaticRecordBuffer.pushData(sensorGraphData);
 			// push the data into the display graph
 			sensorGraphData.pushData(playGraph);
+			sensorGraphData.pushData(averagedData);
 		}
 		
 		@Override
@@ -110,6 +114,7 @@ public class AnalyzeActivity extends Activity {
 					container, false);
 			
 			playGraph.resetPlayPos();
+			footView = (FootView)rootView.findViewById(R.id.footView1);
 			frameLayoutPlayGraph = (FrameLayout)rootView.findViewById(R.id.frameLayoutPlayGraph);
 			textPlayTime = (TextView)rootView.findViewById(R.id.textPlayTime);
 			togglePlay = (ToggleButton)rootView.findViewById(R.id.togglePlay);
@@ -127,6 +132,7 @@ public class AnalyzeActivity extends Activity {
 				display.getSize(size);
 				
 				plotHeight = (int)(0.50f * size.y);
+				footView.setVisibility(View.GONE);
 			}
 			
 			FrameLayout.LayoutParams lp =
@@ -162,21 +168,15 @@ public class AnalyzeActivity extends Activity {
 			super.onDestroyView();
 			frameLayoutPlayGraph.removeAllViews();
 		}
-		
-		public void resetPlayPos() {
-			playGraph.resetPlayPos();
-			playGraph.postInvalidate();
-		}
-		public void setPlayPosMsec(int ms) {
-			playGraph.setPlayPosMsec(ms);
-			playGraph.postInvalidate();
-		}
 		public int getPlayTimeMsec() {
 			return playGraph.getPlayTimeMsec();
 		}
 		
+		private static int REFRESH_RATE_MS = 30;
+		
 		private void startPlaying() {
-			resetPlayPos();
+			playGraph.resetPlayPos();
+			playGraph.postInvalidate();
 			
 			playTimer = new Timer();
 			playTimer.scheduleAtFixedRate(new TimerTask() {
@@ -186,22 +186,114 @@ public class AnalyzeActivity extends Activity {
 				public void run() {
 					handler.post(new Runnable() {
 						public void run() {
-							setPlayPosMsec(playPos);
+							playGraph.setPlayPosMsec(playPos);
+							averagedData.avgSamples(playPos, REFRESH_RATE_MS);
+							
+							footView.setLeftSensors(
+								averagedData.avgLeftFs0,
+								averagedData.avgLeftFs1,
+								averagedData.avgLeftFs2
+								);
+							footView.setRightSensors(
+								averagedData.avgRightFs0,
+								averagedData.avgRightFs1,
+								averagedData.avgRightFs2
+								);
+							
+							footView.postInvalidate();
+							playGraph.postInvalidate();
 							textPlayTime.setText(String.format("Time: %.3f", (float)playPos/1000));
 							
 							if (playPos >= lengthMsec)
 								stopPlaying();
 							else
-								playPos += 50;
+								playPos += REFRESH_RATE_MS;
 						}
 					});
 				}
-			}, 250, 50);
+			}, 250, REFRESH_RATE_MS);
 		}
 		private void stopPlaying() {
 			if (playTimer != null)
 				playTimer.cancel();
 			togglePlay.setChecked(false);
+		}
+		
+		private class AveragedData implements SensorDataSetHandler {
+			private SensorDataSet sensorDataLeft;
+			private SensorDataSet sensorDataRight;
+			private int     totalSamples;
+			private int     sampleRate;
+			private boolean hasSamples;
+			
+			public int avgLeftFs0;
+			public int avgLeftFs1;
+			public int avgLeftFs2;
+			
+			public int avgRightFs0;
+			public int avgRightFs1;
+			public int avgRightFs2;
+			
+			public void avgSamples(int playPosMsecs, int msecsToAvg) {
+				if (!hasSamples)
+					return;
+				
+				final int sampleStart = playPosMsecs/sampleRate;
+				final int samples     = msecsToAvg/sampleRate;
+				final int maxSamples  = Math.min(totalSamples - (samples + sampleStart), samples);
+				
+				avgLeftFs0 =0;
+				avgLeftFs1 =0;
+				avgLeftFs2 =0;
+				
+				avgRightFs0 =0;
+				avgRightFs1 =0;
+				avgRightFs2 =0;
+				
+				if (maxSamples < 1)
+					return;
+				 
+				for (int i=0; i < maxSamples; ++i) {
+					avgLeftFs0 += sensorDataLeft.fs0[sampleStart + i];
+					avgLeftFs1 += sensorDataLeft.fs1[sampleStart + i];
+					avgLeftFs2 += sensorDataLeft.fs2[sampleStart + i];
+					
+					avgRightFs0 += sensorDataRight.fs0[sampleStart + i];
+					avgRightFs1 += sensorDataRight.fs1[sampleStart + i];
+					avgRightFs2 += sensorDataRight.fs2[sampleStart + i];
+				}
+				
+				avgLeftFs0 /= maxSamples;
+				avgLeftFs1 /= maxSamples;
+				avgLeftFs2 /= maxSamples;
+				
+				avgRightFs0 /= maxSamples;
+				avgRightFs1 /= maxSamples;
+				avgRightFs2 /= maxSamples;
+			}
+			
+			
+			@Override
+			public void onData(
+				SensorDataSet left, SensorDataSet right,
+				SensorDataSet club
+			)
+			{
+				sensorDataLeft  = left;
+				sensorDataRight = right;
+				
+				// FIXME: should throw if samplePos, samplesPerSec
+				// are not equal between left and right data sets.
+				if (sensorDataLeft.samplePos < 1)
+					return;
+				if (sensorDataLeft.sampleRate < 1)
+					return;
+				
+				totalSamples = sensorDataLeft.samplePos;
+				sampleRate   = sensorDataLeft.sampleRate;
+				
+				hasSamples = true;
+			}
 		}
 	}
 
