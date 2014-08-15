@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.widget.Button;
 
 public class AnalyzeActivity extends Activity {
 	private AnalyzeActivityFragment analyzeActivityFragment;
@@ -75,6 +76,13 @@ public class AnalyzeActivity extends Activity {
 		}
 	}
 	
+	private void startGraph() {
+		Intent intent = new Intent(this, PlotActivity.class);
+		intent.putExtras(identity.makeIntoBundle());
+		startActivity(intent);
+		finish();
+	}
+	
 	public static class AnalyzeActivityFragment extends Fragment {
 		private Handler      handler;
 		private PlayGraph    playGraph;
@@ -83,6 +91,7 @@ public class AnalyzeActivity extends Activity {
 		private FrameLayout  frameLayoutPlayGraph;
 		private TextView     textPlayTime;
 		private ToggleButton togglePlay;
+		private Button       buttonGraph;
 		private Timer        playTimer;
 		
 		public AnalyzeActivityFragment() {
@@ -118,6 +127,7 @@ public class AnalyzeActivity extends Activity {
 			frameLayoutPlayGraph = (FrameLayout)rootView.findViewById(R.id.frameLayoutPlayGraph);
 			textPlayTime = (TextView)rootView.findViewById(R.id.textPlayTime);
 			togglePlay = (ToggleButton)rootView.findViewById(R.id.togglePlay);
+			buttonGraph = (Button)rootView.findViewById(R.id.buttonGraph);
 			
 			if (playGraph.getPlayTimeMsec() == 0)
 				togglePlay.setEnabled(false);
@@ -152,6 +162,13 @@ public class AnalyzeActivity extends Activity {
 						stopPlaying();
 				}
 			});
+			buttonGraph.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AnalyzeActivity a = (AnalyzeActivity)getActivity();
+					a.startGraph();
+				}
+			});
 			
 			return rootView;
 		}
@@ -162,7 +179,7 @@ public class AnalyzeActivity extends Activity {
 			stopPlaying();
 			textPlayTime.setText("");
 		}
-		
+				
 		@Override
 		public void onDestroyView() {
 			super.onDestroyView();

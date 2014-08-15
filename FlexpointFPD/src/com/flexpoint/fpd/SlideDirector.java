@@ -46,15 +46,13 @@ public class SlideDirector {
 	}
 	
 	private static Class<?> activities[] = {
-		DataActivity.class, RecordActivity.class,
+		DataActivity.class,    RecordActivity.class,
 		AnalyzeActivity.class
 	};
 	private static int currentActivity = 0;	
 	private final GestureDetector gestureDetector;
 	private OnSlideListener onSlideListener;
 	private boolean enabled;
-	
-	
 	
 	private class MultiDetector extends SimpleOnGestureListener {
 		private static final int SWIPE_MIN_DISTANCE = 120;

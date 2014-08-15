@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.flexpoint.fpd"
-    android:versionCode="4"
-    android:versionName="1.3" >
+    android:versionCode="5"
+    android:versionName="1.4" >
 
     <uses-sdk
         android:minSdkVersion="18"
         android:targetSdkVersion="18" />
 
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+    
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -45,6 +49,11 @@
         <activity
             android:name="com.flexpoint.fpd.PairingActivity"
             android:label="@string/title_activity_pairing" >
+        </activity>
+        <activity
+            android:name="com.flexpoint.fpd.PlotActivity"
+            android:label="@string/title_activity_plot"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
 
