@@ -8,5 +8,7 @@
     <string name="title_activity_record">Record</string>
     <string name="title_activity_analyze">Analyze</string>
     <string name="title_activity_pairing">Shoe Pairing</string>
+    <string name="title_activity_plot">Plot</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
