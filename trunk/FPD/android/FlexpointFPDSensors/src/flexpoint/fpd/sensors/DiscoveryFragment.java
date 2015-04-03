@@ -165,6 +165,9 @@ public class DiscoveryFragment extends Fragment {
 		
 			final String btAddress = ((TextView)view).getText().toString();
 			
+			activityCallbacks.onDeviceSelected(btAddress, false);
+			
+			/*
 			new AlertDialog.Builder(getActivity())
 			.setTitle("Device options")
 			.setMessage("Is the common reversed?")
@@ -179,7 +182,8 @@ public class DiscoveryFragment extends Fragment {
 					final boolean commonReversed = true;
 					activityCallbacks.onDeviceSelected(btAddress, commonReversed);
 				}
-			}).create().show();			
+			}).create().show();
+			*/			
 		}
 	};
 	
@@ -188,9 +192,9 @@ public class DiscoveryFragment extends Fragment {
 		public void onDeviceFound(
 			String name, final String address, BluetoothDevice device)
 		{
-			if (!name.contains("Flexpoint"))
+			if (!name.contains("Mettis Trainer"))
 				return;
-				
+			
 			handler.post(new Runnable() {
 				public void run() {
 					listItems.add(address);
