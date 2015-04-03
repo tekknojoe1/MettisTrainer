@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 import saxatech.flexpoint.BleFPDDevice;
+import saxatech.flexpoint.BleMettisDevice;
 
 public class DeviceFragment extends Fragment {
 
@@ -25,14 +26,12 @@ public class DeviceFragment extends Fragment {
 	}
 	
 	private String  btAddress;
-	private boolean commonReversed;
 	private ActivityCallbacks activityCallbacks;
 	private Handler handler;
-	private BleFPDDevice bleDevice;
+	private BleMettisDevice bleDevice;
 	
 	public void setDevice(String btAddress, boolean commonReversed) {
 		this.btAddress = btAddress;
-		this.commonReversed = commonReversed;
 	}
 	
 	@Override
@@ -79,14 +78,12 @@ public class DeviceFragment extends Fragment {
 			failedInit("Bluetooth device no longer available.");
 		}
 		
-		bleDevice = new BleFPDDevice();
-		bleDevice.connect(
+		bleDevice = new BleMettisDevice(
 			context, btDevice,
 			new BleDeviceConnectCallback(),
-			new BleDeviceDataCallback(),
-			commonReversed,
-			0x3
+			new BleDeviceDataCallback()
 			);
+		bleDevice.connect();
 	}
 	
 	private void failedInit(final String error) {
@@ -111,7 +108,7 @@ public class DeviceFragment extends Fragment {
 			bleDevice.close();
 	}
 	
-	private class BleDeviceConnectCallback implements BleFPDDevice.ConnectCallback {
+	private class BleDeviceConnectCallback implements BleMettisDevice.ConnectCallback {
 
 		@Override
 		public void onConnected() {
@@ -149,6 +146,30 @@ public class DeviceFragment extends Fragment {
 		}
 	}
 	
+	private class BleDeviceDataCallback implements BleMettisDevice.DataCallback {
+
+		@Override
+		public void onInfo(String version) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onData(long timeStampNsec, int medial, int lateral,
+				int heal, int cadence, int contactTime, int impactForce) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onBattStatus(int battLevel, int maxBattLevel) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	/*
 	private class BleDeviceDataCallback implements BleFPDDevice.DataCallback {
 
 		@Override
@@ -200,4 +221,5 @@ public class DeviceFragment extends Fragment {
 		}
 		
 	}
+	*/
 }

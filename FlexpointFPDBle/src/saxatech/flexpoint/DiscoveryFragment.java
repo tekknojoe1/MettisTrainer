@@ -68,7 +68,7 @@ public class DiscoveryFragment extends Fragment {
 		if (fpdIdentity == null) {
 			Toast.makeText(
 				appContext,
-				"Failed to load FPD idenitity",
+				"Failed to load Mettis config",
 				Toast.LENGTH_LONG
 				).show();
 			failedInit();
@@ -141,7 +141,7 @@ public class DiscoveryFragment extends Fragment {
 		public void onDeviceFound(
 			String name, String address, BluetoothDevice device)
 		{
-			if (!name.contains("Flexpoint"))
+			if (!name.contains("Mettis Trainer"))
 				return;
 				
 			if (DEBUG)

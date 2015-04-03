@@ -1,6 +1,6 @@
 package com.flexpoint.fpd;
 
-import saxatech.flexpoint.BleFPDDeviceGroup;
+import saxatech.flexpoint.BleMettisDeviceGroup;
 import saxatech.flexpoint.BleFPDIdentity;
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,9 +13,8 @@ import android.os.Handler;
 import android.widget.Toast;
 
 public class DeviceFragment extends Fragment {
-	public static final int DEVICE_TYPE_LEFT_SHOE  = BleFPDDeviceGroup.DEVICE_TYPE_LEFT_SHOE;
-	public static final int DEVICE_TYPE_RIGHT_SHOE = BleFPDDeviceGroup.DEVICE_TYPE_RIGHT_SHOE;
-	public static final int DEVICE_TYPE_CLUB       = BleFPDDeviceGroup.DEVICE_TYPE_CLUB;
+	public static final int DEVICE_TYPE_LEFT_SHOE  = BleMettisDeviceGroup.DEVICE_TYPE_LEFT_SHOE;
+	public static final int DEVICE_TYPE_RIGHT_SHOE = BleMettisDeviceGroup.DEVICE_TYPE_RIGHT_SHOE;
 	
 	public static interface ActivityCallbacks {
 		public void onConnected();
@@ -31,10 +30,9 @@ public class DeviceFragment extends Fragment {
 	
 	private String leftShoeAddress;
 	private String rightShoeAddress;
-	private String clubAddress;
 	private ActivityCallbacks activityCallbacks;
 	private Handler handler;
-	private BleFPDDeviceGroup bleDevices;
+	private BleMettisDeviceGroup bleDevices;
 	private boolean logData;
 	
 	public void setDevices(
@@ -42,15 +40,12 @@ public class DeviceFragment extends Fragment {
 		)
 	{
 		leftShoeAddress = null;
-		rightShoeAddress = null;
-		clubAddress = null;
+		rightShoeAddress = null;		
 		
 		if (identity.isLeftShoeEnabled())
 			leftShoeAddress = identity.getLeftShoeAddr();
 		if (identity.isRightShoeEnabled())
-			rightShoeAddress = identity.getRightShoeAddr();
-		if (identity.isClubEnabled())
-			clubAddress = identity.getClubAddr();
+			rightShoeAddress = identity.getRightShoeAddr();		
 		logData = identity.isDataLoggingEnabled();
 	}
 	
@@ -62,7 +57,6 @@ public class DeviceFragment extends Fragment {
 	{
 		this.leftShoeAddress = leftShoeAddress;
 		this.rightShoeAddress = rightShoeAddress;
-		this.clubAddress = clubAddress;
 	}
 	
 	@Override
@@ -96,22 +90,17 @@ public class DeviceFragment extends Fragment {
 		
 		BluetoothDevice bluetoothLeftShoe  = null;
 		BluetoothDevice bluetoothRightShoe = null;
-		BluetoothDevice bluetoothClub      = null;
 		
 		if (leftShoeAddress != null)
 			bluetoothLeftShoe = bluetoothAdapter.getRemoteDevice(leftShoeAddress);
 		if (rightShoeAddress != null)
-			bluetoothRightShoe = bluetoothAdapter.getRemoteDevice(rightShoeAddress);
-		if (clubAddress != null)
-			bluetoothClub = bluetoothAdapter.getRemoteDevice(clubAddress);
+			bluetoothRightShoe = bluetoothAdapter.getRemoteDevice(rightShoeAddress);		
 		
-		bleDevices = new BleFPDDeviceGroup();
+		bleDevices = new BleMettisDeviceGroup();
 		final boolean rv = bleDevices.connect(
 			context,
-			handler,
 			bluetoothLeftShoe,
 			bluetoothRightShoe,
-			bluetoothClub,
 			logData,
 			new BleDevConnectCallback(),
 			new BleDevDataCallback()
@@ -152,7 +141,7 @@ public class DeviceFragment extends Fragment {
 		});
 	}
 	
-	private class BleDevConnectCallback implements BleFPDDeviceGroup.ConnectCallback {
+	private class BleDevConnectCallback implements BleMettisDeviceGroup.ConnectCallback {
 		@Override
 		public void onConnected() {
 			if (activityCallbacks == null)
@@ -173,31 +162,39 @@ public class DeviceFragment extends Fragment {
 			if (activityCallbacks == null)
 				return;
 			activityCallbacks.onFailed(
-				BleFPDDeviceGroup.connectErrorString(connect_error)
+				BleMettisDeviceGroup.connectErrorString(connect_error)
 				);
 		}
 	}
-	private class BleDevDataCallback implements BleFPDDeviceGroup.DataCallback {
+	private class BleDevDataCallback implements BleMettisDeviceGroup.DataCallback {
 		@Override
 		public void onData(
-			int deviceType,
-			long timeStamp,
-			int fs0, int fs1, int fs2,
-			int fs3, int fs4,
-			int acX, int acY, int acZ,
-			int mgX, int mgY, int mgZ
+				int deviceType,
+				long timeStamp,
+				int medial, int lateral, int heal,
+				int cadence, int contactTime, int impactForce
 			)
 		{
 			if (activityCallbacks == null)
 				return;
-			activityCallbacks.onSensor(deviceType, timeStamp, fs0, fs1, fs2);
+			activityCallbacks.onSensor(deviceType, timeStamp, medial, lateral, heal);
 		}
 		@Override
-		public void onBatteryStatus(int deviceType, int batteryLevel,
-			int maxBatteryLevel, boolean isCharging
+		public void onBattStatus(
+			int deviceType, int batteryLevel,
+			int maxBatteryLevel
 			)
 		{
 			// TODO Auto-generated method stub			
+		}
+		@Override
+		public void onInfo(
+			int deviceType,
+			String version
+			)
+		{
+			// TODO Auto-generated method stub
+			
 		}
 	}
 }
