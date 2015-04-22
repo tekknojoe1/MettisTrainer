@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import saxatech.flexpoint.BleFPDDeviceGroup;
@@ -106,6 +108,7 @@ public class DataActivity extends Activity
 		private TextView textViewStatus;
 		private FootView footView;
 		private BarView  barView;
+		private Button   buttonReset;
 		private String statusText = "Waiting for devices....";
 				
 		StaticDynamicCalibration calibrator = new StaticDynamicCalibration();
@@ -125,6 +128,13 @@ public class DataActivity extends Activity
 			textViewStatus.setText(statusText);
 			footView = (FootView)rootView.findViewById(R.id.footView1);
 			barView = (BarView)rootView.findViewById(R.id.barView1);
+			buttonReset = (Button)rootView.findViewById(R.id.buttonReset);
+			buttonReset.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					barView.reset();
+				}
+			});
 			return rootView;
 		}
 		public void setDeviceStatusText(String text) {

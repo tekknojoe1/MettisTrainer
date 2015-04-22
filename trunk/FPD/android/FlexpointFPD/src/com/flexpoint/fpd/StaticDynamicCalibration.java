@@ -2,6 +2,7 @@ package com.flexpoint.fpd;
 
 public class StaticDynamicCalibration {
 	private static Calibrator calibrator = new Calibrator();
+	//private static NullCalibrator calibrator = new NullCalibrator();
 	
 	public void setLeftSensors(int fs0, int fs1, int fs2) {
 		calibrator.setLeftSensors(fs0, fs1, fs2);
@@ -34,6 +35,34 @@ public class StaticDynamicCalibration {
 	}
 	public int summed_right() {
 		return calibrator.right_sum;
+	}
+		
+	private static class NullCalibrator {
+		public int left_sum;
+		public int right_sum;
+				
+		public int left_fs0;
+		public int left_fs1;
+		public int left_fs2;
+		
+		public int right_fs0;
+		public int right_fs1;
+		public int right_fs2;
+				
+		public void setLeftSensors(int fs0, int fs1, int fs2) {
+			left_fs0 = fs0;
+			left_fs1 = fs1;
+			left_fs2 = fs2;
+			
+			left_sum = left_fs0+left_fs1+left_fs2;
+		}
+		public void setRightSensors(int fs0, int fs1, int fs2) {
+			right_fs0 = fs0;
+			right_fs1 = fs1;
+			right_fs2 = fs2;
+			
+			right_sum = right_fs0+right_fs1+right_fs2;
+		}
 	}
 	
 	private static class Calibrator {
