@@ -139,7 +139,7 @@ public class BleMettisDeviceGroup {
 			deviceList.add(deviceRight);
 			deviceMask |= DEVICE_TYPE_RIGHT_SHOE;
 		}
-		return true;
+		return deviceList.remove().mettisDevice.connect();
 	}
 	
 	public void startData() {

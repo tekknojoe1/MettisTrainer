@@ -213,7 +213,7 @@ public class PairFragment extends Fragment {
 		public void onDeviceFound(
 			String name, final String address, BluetoothDevice device)
 		{
-			if (!name.contains("Flexpoint"))
+			if (!name.contains("Mettis Trainer"))
 				return;
 				
 			handler.post(new Runnable() {
