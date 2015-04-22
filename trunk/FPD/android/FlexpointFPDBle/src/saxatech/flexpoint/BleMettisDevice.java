@@ -148,11 +148,14 @@ public class BleMettisDevice {
 		}
 		
 		public boolean startData() {
+			LogD("Enabling notifications");
+			
 			final BluetoothGattCharacteristic c =
 				dataService.getCharacteristic(DATA_CHAR_UUID);
 			final BluetoothGattDescriptor cccd =
 				c.getDescriptor(CCCD_UUID);
 			// enable notifications
+						
 			bluetoothGatt.setCharacteristicNotification(c, true);
 			cccd.setValue(
 				BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
@@ -208,10 +211,12 @@ public class BleMettisDevice {
 			BluetoothGattCharacteristic characteristic
 			)
 		{
+			final byte[] data = characteristic.getValue();
+			Log.i("DATA", "size = " + data.length);
+			
 			if (!DATA_CHAR_UUID.equals(characteristic.getUuid()))
 				return;
 			
-			final byte[] data = characteristic.getValue();
 			if (data.length != 6)
 				return;
 			
@@ -222,6 +227,35 @@ public class BleMettisDevice {
 				data[0], data[1], data[2],
 				data[3], data[4], data[5]
 				);
+		}
+		
+		@Override
+		public void onCharacteristicWrite(
+			BluetoothGatt gatt,
+			BluetoothGattCharacteristic characteristic,
+			int status
+			)
+		{
+			if (status != BluetoothGatt.GATT_SUCCESS) {
+				LogE("onCharacteristicWrite failed: " + status);				
+			}
+			else if (DATA_CHAR_UUID.equals(characteristic.getUuid() )) {
+				LogD("DataService characteristic changed");
+			}
+		}
+		@Override
+		public void onDescriptorWrite (
+			BluetoothGatt gatt, 
+			BluetoothGattDescriptor descriptor,
+			int status
+			)
+		{
+			if (status != BluetoothGatt.GATT_SUCCESS) {
+				LogE("onCharacteristicWrite failed: " + status);				
+			}
+			else {
+				LogD("DataService descriptor changed");
+			}
 		}
 		
 		private void onConnected() {

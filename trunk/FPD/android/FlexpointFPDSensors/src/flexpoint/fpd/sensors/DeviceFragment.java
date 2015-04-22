@@ -158,7 +158,7 @@ public class DeviceFragment extends Fragment {
 		public void onData(long timeStampNsec, int medial, int lateral,
 				int heal, int cadence, int contactTime, int impactForce) {
 			// TODO Auto-generated method stub
-			
+			activityCallbacks.onSensor(medial, lateral, heal, 0, 0);
 		}
 
 		@Override
