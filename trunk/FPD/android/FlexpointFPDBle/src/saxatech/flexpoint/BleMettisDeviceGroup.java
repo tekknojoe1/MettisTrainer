@@ -283,26 +283,13 @@ public class BleMettisDeviceGroup {
 					if (disconnected)
 						return;
 										
-					if (deviceType == DEVICE_TYPE_LEFT_SHOE) {
-						dataCallback.onData(
-							deviceType,
-							timeStampNsec,
-							medial, lateral, heal,
-							cadence, contactTime,
-							impactForce
-							);
-					}
-					else {
-						//FIXME: this is just until Joe can
-						//swap the values in firmware.
-						dataCallback.onData(
-							deviceType,
-							timeStampNsec,
-							heal, lateral, medial,
-							cadence, contactTime,
-							impactForce
-							);
-					}
+					dataCallback.onData(
+						deviceType,
+						timeStampNsec,
+						medial, lateral, heal,
+						cadence, contactTime,
+						impactForce
+						);
 				}
 			});
 			if (logger != null) {
