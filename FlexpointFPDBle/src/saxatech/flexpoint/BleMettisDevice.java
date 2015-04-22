@@ -210,13 +210,11 @@ public class BleMettisDevice {
 			BluetoothGatt gatt,
 			BluetoothGattCharacteristic characteristic
 			)
-		{
-			final byte[] data = characteristic.getValue();
-			Log.i("DATA", "size = " + data.length);
-			
+		{	
 			if (!DATA_CHAR_UUID.equals(characteristic.getUuid()))
 				return;
-			
+		
+			final byte[] data = characteristic.getValue();
 			if (data.length != 6)
 				return;
 			
@@ -224,8 +222,12 @@ public class BleMettisDevice {
 			
 			dataCallback.onData(
 				timeStamp,
-				data[0], data[1], data[2],
-				data[3], data[4], data[5]
+				(int)data[0]& 0xff,
+				(int)data[1]& 0xff,
+				(int)data[2]& 0xff,
+				(int)data[3]& 0xff,
+				(int)data[4]& 0xff,
+				(int)data[5]& 0xff
 				);
 		}
 		

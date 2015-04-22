@@ -18,13 +18,26 @@
         android:text="Connecting to devices..."
         android:textColor="#ffffffff" />
 
-    <com.flexpoint.fpd.FootView
-        android:id="@+id/footView1"
-        
-        android:layout_marginTop="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="292dp"
-        android:src="@drawable/tooties2" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.flexpoint.fpd.FootView
+            android:id="@+id/footView1"
+            android:layout_width="wrap_content"
+            android:layout_height="292dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/tooties2" />
+
+        <Button
+            android:id="@+id/buttonReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center"
+            android:text="reset" />
+
+    </FrameLayout>
     
     <com.flexpoint.fpd.BarView
         android:id="@+id/barView1"
