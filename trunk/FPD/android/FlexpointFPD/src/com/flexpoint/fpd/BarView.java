@@ -29,6 +29,7 @@ public class BarView extends ImageView {
 	
 	private final int maxValue = 768;
 	private final float textSize = 40.f;
+	private final int HundredPercentThresh = 600; //Same as defined in calibrator
 	
 	public BarView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -48,12 +49,12 @@ public class BarView extends ImageView {
 	}
 	
 	public void setLeftValue(int v) {
-		leftValue = scale * v;
+		leftValue = v;  //in percent where 600 = 100%
 		if (leftValue > leftMaxValue)
 			leftMaxValue = leftValue;
 	}
 	public void setRightValue(int v) {
-		rightValue = scale * v;
+		rightValue = v;
 		if (rightValue > rightMaxValue)
 			rightMaxValue = rightValue;
 	}
@@ -86,31 +87,30 @@ public class BarView extends ImageView {
 				
 		final float leftX = xOffset;		 
 		canvas.drawRect(
-			leftX, (float)height-leftValue,
+			leftX, (float)height-(leftValue*scale),
 			leftX+barWidth, height,
 			barPaint
 			);
 		
 		final float rightX = width-(xOffset+barWidth);
 		canvas.drawRect(
-			rightX, (float)height-rightValue,
+			rightX, (float)height-(rightValue*scale),
 			rightX+barWidth, height,
 			barPaint
 			);
 		canvas.drawLine(
-			leftX, (float)height-leftMaxValue,
-			leftX+barWidth, (float)height-leftMaxValue,
+			leftX, (float)height-(leftMaxValue*scale),
+			leftX+barWidth, (float)height-(leftMaxValue*scale),
 			meterPaint
 			);
 		canvas.drawLine(
-			rightX, (float)height-rightMaxValue,
-			rightX+barWidth, (float)height-rightMaxValue,
+			rightX, (float)height-(rightMaxValue*scale),
+			rightX+barWidth, (float)height-(rightMaxValue*scale),
 			meterPaint
 			);
 		
-		final float max_v = leftValue + rightValue;
-		final int left_percent  = (int)((leftValue * 100.f)/max_v);
-		final int right_percent = (int)((rightValue * 100.f)/max_v);
+		final int left_percent  = (int)((leftMaxValue * 100.f)/HundredPercentThresh);
+		final int right_percent = (int)((rightMaxValue * 100.f)/HundredPercentThresh);
 		
 		canvas.drawText(
 			Integer.toString(left_percent) + "%",
