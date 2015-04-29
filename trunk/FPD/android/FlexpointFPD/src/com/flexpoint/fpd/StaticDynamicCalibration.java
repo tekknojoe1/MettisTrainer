@@ -12,57 +12,29 @@ public class StaticDynamicCalibration {
 	}
 	
 	public int adjusted_left_fs0() {
-		return calibrator.left_fs0;
+		return calibrator.adjusted_left_fs0;
 	}
 	public int adjusted_left_fs1() {
-		return calibrator.left_fs1;
+		return calibrator.adjusted_left_fs1;
 	}
 	public int adjusted_left_fs2() {
-		return calibrator.left_fs2;
+		return calibrator.adjusted_left_fs2;
 	}
 	public int summed_left() {
-		return calibrator.left_sum;
+		return calibrator.summed_left;
 	}
 	
 	public int adjusted_right_fs0() {
-		return calibrator.right_fs0;
+		return calibrator.adjusted_right_fs0;
 	}
 	public int adjusted_right_fs1() {
-		return calibrator.right_fs1;
+		return calibrator.adjusted_right_fs1;
 	}
 	public int adjusted_right_fs2() {
-		return calibrator.right_fs2;
+		return calibrator.adjusted_right_fs2;
 	}
 	public int summed_right() {
-		return calibrator.right_sum;
-	}
-		
-	private static class NullCalibrator {
-		public int left_sum;
-		public int right_sum;
-				
-		public int left_fs0;
-		public int left_fs1;
-		public int left_fs2;
-		
-		public int right_fs0;
-		public int right_fs1;
-		public int right_fs2;
-				
-		public void setLeftSensors(int fs0, int fs1, int fs2) {
-			left_fs0 = fs0;
-			left_fs1 = fs1;
-			left_fs2 = fs2;
-			
-			left_sum = left_fs0+left_fs1+left_fs2;
-		}
-		public void setRightSensors(int fs0, int fs1, int fs2) {
-			right_fs0 = fs0;
-			right_fs1 = fs1;
-			right_fs2 = fs2;
-			
-			right_sum = right_fs0+right_fs1+right_fs2;
-		}
+		return calibrator.summed_right;
 	}
 	
 	private static class Calibrator {
