@@ -77,10 +77,15 @@ public class StaticDynamicCalibration {
 		
 					
 		public Calibrator() {
-			left_max_value = 0;
+			left_max_value = 10;
 			left_hist_sum = 0;
 			left_sample_ptr = 0;
 			left_stillness = 0;
+			
+			right_max_value = 10;
+			right_hist_sum = 0;
+			right_sample_ptr = 0;
+			right_stillness = 0;
 		}
 		
 		public void setLeftSensors(int fs0, int fs1, int fs2) {		
