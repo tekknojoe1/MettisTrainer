@@ -1,6 +1,10 @@
 package com.flexpoint.fpd;
 
+import android.util.Log;
+
 public class StaticDynamicCalibration {
+	private static final String LOG_TAG = "Calibration";
+	
 	private static Calibrator calibrator = new Calibrator();
 	//private static NullCalibrator calibrator = new NullCalibrator();
 	
@@ -35,6 +39,11 @@ public class StaticDynamicCalibration {
 	}
 	public int summed_right() {
 		return calibrator.summed_right;
+	}
+	
+	private static void LogD(String msg)
+	{
+		Log.i(LOG_TAG, msg);
 	}
 	
 	private static class Calibrator {
@@ -73,8 +82,6 @@ public class StaticDynamicCalibration {
 		int right_stillness;
 		int right_stillness_timer = StillnessTime;
 		int right_baseline;
-		
-		
 					
 		public Calibrator() {
 			left_max_value = 10;
@@ -97,13 +104,14 @@ public class StaticDynamicCalibration {
 			left_hist_sum += left_hist[left_sample_ptr]; //Update history sum with newest sample
 			int left_ave = left_hist_sum / SampleSize;
 			
-			
 			//Compute left stillness
 			left_stillness = 0;
 			for (i=0;i<SampleSize;i++) {
 				left_stillness += Math.abs(left_hist[i] - left_ave);
 			}
 			left_stillness /= SampleSize;
+			
+			LogD("stillness = " + left_stillness);
 			
 			if (left_stillness < StillnessThresh) {
 				
