@@ -111,14 +111,12 @@ public class StaticDynamicCalibration {
 			}
 			left_stillness /= SampleSize;
 			
-			LogD("stillness = " + left_stillness);
-			
 			if (left_stillness < StillnessThresh) {
 				
 				if (left_stillness_timer == 0) {
 					
 					if (left_hist[left_sample_ptr] > (2 * right_hist[right_sample_ptr]) ) {
-						
+						LogD("****** Calibrated left");
 						//Standing on left foot
 						left_max_value = left_ave; //Store max value
 						
@@ -147,7 +145,7 @@ public class StaticDynamicCalibration {
 			adjusted_left_fs1 = fs1;
 			adjusted_left_fs1 = fs1;
 			
-			
+			LogD("left stillness = " + left_stillness + " summed left " + summed_left);
 		}
 		public void setRightSensors(int fs0, int fs1, int fs2) {
 			int i;
