@@ -51,7 +51,7 @@ public class StaticDynamicCalibration {
 		private static final int MaxSensors = 3;
 		private static final int SampleSize = 16;
 		private static final int StillnessThresh = 5;
-		private static final int StillnessTime = 30;
+		private static final int StillnessTime = 60;
 		private static final int HundredPercentThresh = 600; //We are going to say that 600 is 100 percent. This give us some room to go above 100 percent (up to 768 which would be 128%)
 		
 		public int adjusted_left_fs0;
@@ -72,6 +72,7 @@ public class StaticDynamicCalibration {
 		int left_hist[] = new int[SampleSize];
 		int left_sample_ptr;
 		int left_hist_sum;
+		int left_ave;
 		int left_stillness;
 		int left_stillness_timer = StillnessTime;
 		int left_baseline;
@@ -79,17 +80,18 @@ public class StaticDynamicCalibration {
 		int right_hist[] = new int[SampleSize];
 		int right_sample_ptr;
 		int right_hist_sum;
+		int right_ave;
 		int right_stillness;
 		int right_stillness_timer = StillnessTime;
 		int right_baseline;
 					
 		public Calibrator() {
-			left_max_value = 10;
+			left_max_value = HundredPercentThresh;
 			left_hist_sum = 0;
 			left_sample_ptr = 0;
 			left_stillness = 0;
 			
-			right_max_value = 10;
+			right_max_value = HundredPercentThresh;
 			right_hist_sum = 0;
 			right_sample_ptr = 0;
 			right_stillness = 0;
@@ -102,7 +104,12 @@ public class StaticDynamicCalibration {
 			left_hist_sum -= left_hist[left_sample_ptr]; //Remove latest sample
 			left_hist[left_sample_ptr] = left_sum; //Add newest sample
 			left_hist_sum += left_hist[left_sample_ptr]; //Update history sum with newest sample
-			int left_ave = left_hist_sum / SampleSize;
+			left_ave = left_hist_sum / SampleSize;
+			
+			left_sample_ptr++;
+			if (left_sample_ptr >= SampleSize) {
+				left_sample_ptr = 0;
+			}
 			
 			//Compute left stillness
 			left_stillness = 0;
@@ -115,12 +122,12 @@ public class StaticDynamicCalibration {
 				
 				if (left_stillness_timer == 0) {
 					
-					if (left_hist[left_sample_ptr] > (2 * right_hist[right_sample_ptr]) ) {
+					if (left_ave > (2 * right_ave) ) {
 						LogD("****** Calibrated left");
 						//Standing on left foot
 						left_max_value = left_ave; //Store max value
 						
-					} else if (right_hist[right_sample_ptr] > (2 * left_hist[left_sample_ptr]) )
+					} else if (right_ave > (2 * left_ave) )
 						
 						//Standing on right foot, assume left foot is in the air (not loaded)
 						left_baseline = left_ave;						
@@ -145,7 +152,7 @@ public class StaticDynamicCalibration {
 			adjusted_left_fs1 = fs1;
 			adjusted_left_fs1 = fs1;
 			
-			LogD("left stillness = " + left_stillness + " summed left " + summed_left);
+			LogD("left stillness = " + left_stillness + " summed left " + left_sum);
 		}
 		public void setRightSensors(int fs0, int fs1, int fs2) {
 			int i;
@@ -154,8 +161,12 @@ public class StaticDynamicCalibration {
 			right_hist_sum -= right_hist[right_sample_ptr]; //Remove latest sample
 			right_hist[right_sample_ptr] = right_sum; //Add newest sample
 			right_hist_sum += right_hist[right_sample_ptr]; //Update history sum with newest sample
-			int right_ave = right_hist_sum / SampleSize;
+			right_ave = right_hist_sum / SampleSize;
 			
+			right_sample_ptr++;
+			if (right_sample_ptr >= SampleSize) {
+				right_sample_ptr = 0;
+			}
 			
 			//Compute left stillness
 			right_stillness = 0;
@@ -168,12 +179,12 @@ public class StaticDynamicCalibration {
 				
 				if (right_stillness_timer == 0) {
 					
-					if (right_hist[right_sample_ptr] > (2 * left_hist[right_sample_ptr]) ) {
+					if (right_ave > (2 * left_ave) ) {
 						
 						//Standing on right foot
 						right_max_value = right_ave; //Store max value
 						
-					} else if (left_hist[right_sample_ptr] > (2 * right_hist[right_sample_ptr]) )
+					} else if (left_ave > (2 * right_ave) )
 						
 						//Standing on left foot, assume right foot is in the air (not loaded)
 						right_baseline = right_ave;						
@@ -192,7 +203,7 @@ public class StaticDynamicCalibration {
 			}
 			
 			summed_right = summed_right * HundredPercentThresh / right_max_value;
-			
+						
 			adjusted_right_fs0 = fs0;
 			adjusted_right_fs1 = fs1;
 			adjusted_right_fs1 = fs1;
