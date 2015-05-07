@@ -4,6 +4,8 @@ import java.util.ArrayDeque;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.flexpoint.fpd.StaticDynamicCalibration.CalibrationCallback;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -19,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import saxatech.flexpoint.BleFPDDeviceGroup;
 import saxatech.flexpoint.BleFPDIdentity;
@@ -101,9 +104,27 @@ public class DataActivity extends Activity
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
+	private StaticDynamicCalibration.CalibrationCallback leftCalibrationCallback =
+		new StaticDynamicCalibration.CalibrationCallback() {
+			@Override
+			public void onCalibrationComplete() {
+				Toast.makeText(DataActivity.this,
+					"Left insole calibrated",
+					Toast.LENGTH_LONG
+					).show();
+			}
+		};
+	private StaticDynamicCalibration.CalibrationCallback rightCalibrationCallback =
+		new StaticDynamicCalibration.CalibrationCallback() {
+			@Override
+			public void onCalibrationComplete() {
+				Toast.makeText(DataActivity.this,
+					"Right insole calibrated",
+					Toast.LENGTH_LONG
+					).show();
+			}
+		};
+		
 	public static class DataActivityFragment extends Fragment {
 		private TextView textViewStatus;
 		private FootView footView;
@@ -141,8 +162,14 @@ public class DataActivity extends Activity
 			statusText = text;
 			textViewStatus.setText(statusText);
 		}
-		public void setLeftSensors(int fs0, int fs1, int fs2) {
-			calibrator.setLeftSensors(fs0, fs1, fs2);
+		public void setLeftSensors(
+			int fs0, int fs1, int fs2,
+			CalibrationCallback calibrationCallback
+			)
+		{
+			calibrator.setLeftSensors(
+				fs0, fs1, fs2, calibrationCallback
+				);
 			
 			footView.setLeftSensors(
 				calibrator.adjusted_left_fs0(),
@@ -151,8 +178,14 @@ public class DataActivity extends Activity
 				);
 			barView.setLeftValue(calibrator.summed_left());
 		}
-		public void setRightSensors(int fs0, int fs1, int fs2) {
-			calibrator.setRightSensors(fs0, fs1, fs2);
+		public void setRightSensors(
+			int fs0, int fs1, int fs2,
+			CalibrationCallback calibrationCallback
+			)
+		{
+			calibrator.setRightSensors(
+				fs0, fs1, fs2, calibrationCallback
+				);
 			
 			footView.setRightSensors(
 				calibrator.adjusted_right_fs0(),
@@ -190,10 +223,10 @@ public class DataActivity extends Activity
 	@Override
 	public void onSensor(int deviceType, long timeStamp, int fs0, int fs1, int fs2) {		
 		if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_LEFT_SHOE) {
-			dataActivityFragment.setLeftSensors(fs0, fs1, fs2);
+			dataActivityFragment.setLeftSensors(fs0, fs1, fs2, leftCalibrationCallback);
 		}
 		else if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_RIGHT_SHOE) {
-			dataActivityFragment.setRightSensors(fs0, fs1, fs2);
+			dataActivityFragment.setRightSensors(fs0, fs1, fs2, rightCalibrationCallback);
 		}
 	}
 	

@@ -121,6 +121,14 @@ public class RecordActivity extends Activity implements
 		recordActivityFragment.setDeviceStatusText(error);
 	}
 
+	private StaticDynamicCalibration.CalibrationCallback nullCalibrationCallback
+		= new StaticDynamicCalibration.CalibrationCallback() {		
+		@Override
+		public void onCalibrationComplete() {
+			// DO NOTHING
+		}
+	};
+	
 	@Override
 	public void onSensor(int deviceType, long timeStampNsec, int fs0, int fs1, int fs2) {
 		if (deviceType == BleFPDDeviceGroup.DEVICE_TYPE_LEFT_SHOE) {
@@ -129,9 +137,10 @@ public class RecordActivity extends Activity implements
 			if (!recording)
 				return;
 			calibrator.setLeftSensors(
-				calibrator.adjusted_left_fs0(),
-				calibrator.adjusted_left_fs1(),
-				calibrator.adjusted_left_fs2()
+				fs0,
+				fs1,
+				fs2,
+				nullCalibrationCallback
 				);
 			recordBuffer.storeLeft(timeStampNsec, fs0, fs1, fs2);
 		}
@@ -141,9 +150,10 @@ public class RecordActivity extends Activity implements
 			if (!recording)
 				return;
 			calibrator.setRightSensors(
-				calibrator.adjusted_right_fs0(),
-				calibrator.adjusted_right_fs1(),
-				calibrator.adjusted_right_fs2()
+				fs0,
+				fs1,
+				fs2,
+				nullCalibrationCallback
 				);
 			recordBuffer.storeRight(timeStampNsec, fs0, fs1, fs2);
 		}

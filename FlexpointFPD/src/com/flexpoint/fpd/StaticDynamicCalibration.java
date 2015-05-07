@@ -6,13 +6,25 @@ public class StaticDynamicCalibration {
 	private static final String LOG_TAG = "Calibration";
 	
 	private static Calibrator calibrator = new Calibrator();
-	//private static NullCalibrator calibrator = new NullCalibrator();
 	
-	public void setLeftSensors(int fs0, int fs1, int fs2) {
-		calibrator.setLeftSensors(fs0, fs1, fs2);
+	public interface CalibrationCallback {
+		public void onCalibrationComplete();
 	}
-	public void setRightSensors(int fs0, int fs1, int fs2) {
-		calibrator.setRightSensors(fs0, fs1, fs2);
+	
+	
+	public void setLeftSensors(
+		int fs0, int fs1, int fs2,
+		CalibrationCallback calibrationCallback
+		)
+	{
+		calibrator.setLeftSensors(fs0, fs1, fs2, calibrationCallback);
+	}
+	public void setRightSensors(
+		int fs0, int fs1, int fs2,
+		CalibrationCallback calibrationCallback
+		)
+	{
+		calibrator.setRightSensors(fs0, fs1, fs2, calibrationCallback);
 	}
 	
 	public int adjusted_left_fs0() {
@@ -97,7 +109,11 @@ public class StaticDynamicCalibration {
 			right_stillness = 0;
 		}
 		
-		public void setLeftSensors(int fs0, int fs1, int fs2) {		
+		public void setLeftSensors(
+			int fs0, int fs1, int fs2,
+			CalibrationCallback calibrationCallback
+			)
+		{		
 			int i;
 			int left_sum = fs0+fs1+fs2; //All sensor should already be baselined by the hardware and should have values between 0-255
 			
@@ -123,7 +139,7 @@ public class StaticDynamicCalibration {
 				if (left_stillness_timer == 0) {
 					
 					if (left_ave > (2 * right_ave) ) {
-						LogD("****** Calibrated left");
+						calibrationCallback.onCalibrationComplete();
 						//Standing on left foot
 						left_max_value = left_ave; //Store max value
 						
@@ -154,7 +170,12 @@ public class StaticDynamicCalibration {
 			
 			LogD("left stillness = " + left_stillness + " summed left " + left_sum);
 		}
-		public void setRightSensors(int fs0, int fs1, int fs2) {
+		
+		public void setRightSensors(
+			int fs0, int fs1, int fs2,
+			CalibrationCallback calibrationCallback
+			)
+		{
 			int i;
 			int right_sum = fs0+fs1+fs2; //All sensor should already be baselined by the hardware and should have values between 0-255
 			
@@ -180,7 +201,7 @@ public class StaticDynamicCalibration {
 				if (right_stillness_timer == 0) {
 					
 					if (right_ave > (2 * left_ave) ) {
-						
+						calibrationCallback.onCalibrationComplete();
 						//Standing on right foot
 						right_max_value = right_ave; //Store max value
 						
