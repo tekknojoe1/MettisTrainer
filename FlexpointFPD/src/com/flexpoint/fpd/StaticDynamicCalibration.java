@@ -150,7 +150,7 @@ public class StaticDynamicCalibration {
 			//Lets just use raw values here
 			adjusted_left_fs0 = fs0;
 			adjusted_left_fs1 = fs1;
-			adjusted_left_fs1 = fs1;
+			adjusted_left_fs2 = fs2;
 			
 			LogD("left stillness = " + left_stillness + " summed left " + left_sum);
 		}
@@ -206,7 +206,7 @@ public class StaticDynamicCalibration {
 						
 			adjusted_right_fs0 = fs0;
 			adjusted_right_fs1 = fs1;
-			adjusted_right_fs1 = fs1;
+			adjusted_right_fs2 = fs2;
 			
 		}
 		
