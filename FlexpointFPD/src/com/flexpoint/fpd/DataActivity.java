@@ -130,6 +130,8 @@ public class DataActivity extends Activity
 		private FootView footView;
 		private BarView  barView;
 		private Button   buttonReset;
+		private Button   buttonLeft;
+		private Button   buttonRight;
 		private String statusText = "Waiting for devices....";
 				
 		StaticDynamicCalibration calibrator = new StaticDynamicCalibration();
@@ -149,6 +151,7 @@ public class DataActivity extends Activity
 			textViewStatus.setText(statusText);
 			footView = (FootView)rootView.findViewById(R.id.footView1);
 			barView = (BarView)rootView.findViewById(R.id.barView1);
+			
 			buttonReset = (Button)rootView.findViewById(R.id.buttonReset);
 			buttonReset.setOnClickListener(new OnClickListener() {
 				@Override
@@ -156,6 +159,27 @@ public class DataActivity extends Activity
 					barView.reset();
 				}
 			});
+			
+			buttonLeft = (Button)rootView.findViewById(R.id.buttonLeft);
+			buttonLeft.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					calibrator.calLeft();
+				}
+			});
+			
+			buttonRight = (Button)rootView.findViewById(R.id.buttonRight);
+			buttonRight.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					calibrator.calRight();
+				}
+			});
+			
+			
+			
+			
+			
 			return rootView;
 		}
 		public void setDeviceStatusText(String text) {
