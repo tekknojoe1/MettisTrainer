@@ -49,7 +49,7 @@ public class BarView extends ImageView {
 	}
 	
 	public void setLeftValue(int v) {
-		leftValue = v;  //in percent where 600 = 100%
+		leftValue = v;  //in percent where 384 = 100% (128*3)
 		if (leftValue > leftMaxValue)
 			leftMaxValue = leftValue;
 	}
