@@ -36,22 +36,6 @@
             android:layout_marginTop="32dp"
             android:layout_gravity="center"
             android:text="reset" />
-
-        <Button
-            android:id="@+id/buttonLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_gravity="center"
-            android:text="Cal Left" />
-        
-        <Button
-            android:id="@+id/buttonRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="130dp"
-            android:layout_gravity="center"
-            android:text="Cal Right" />
         
         
         

@@ -11,13 +11,7 @@ public class StaticDynamicCalibration {
 		public void onCalibrationComplete();
 	}
 	
-	public void calLeft() {
-		calibrator.calLeft();
-	}
 	
-	public void calRight() {
-		calibrator.calRight();
-	}
 	
 	public void setLeftSensors(
 		int fs0, int fs1, int fs2,
@@ -78,36 +72,17 @@ public class StaticDynamicCalibration {
 		public int adjusted_right_fs1;
 		public int adjusted_right_fs2;
 		
-		public int do_cal_left;
-		public int do_cal_right;
-		
-		public int left_max_value;
-		public int right_max_value;
-		
 		public int summed_left;
 		public int summed_right;
 				
 		
-		int left_baseline;
 		
-		int right_baseline;
 					
 		public Calibrator() {
-			left_max_value = HundredPercentThresh;
-			do_cal_left = 0;
 			
-			right_max_value = HundredPercentThresh;
-			do_cal_right = 0;
 		}
 		
-		public void calLeft()	{
-			do_cal_left = 0x3;
-		}
-		
-		public void calRight()	{
-			do_cal_right = 0x3;
-		}
-		
+				
 		public void setLeftSensors(
 			int fs0, int fs1, int fs2,
 			CalibrationCallback calibrationCallback
@@ -116,22 +91,8 @@ public class StaticDynamicCalibration {
 			int i;
 			int left_sum = fs0+fs1+fs2; //All sensor should already be baselined by the hardware and should have values between 0-255
 			
-			if ( (do_cal_left & 0x1) > 0) {
-				do_cal_left &= ~0x1;  //Clear store max flag
-				left_max_value = left_sum; //Store max value
-			}
-			
-			if ( (do_cal_right & 0x2) > 0) {
-				do_cal_right &= ~0x2;  //Clear store baseline flag
-				left_baseline = left_sum; //Store baseline value
-			}
 						
-			summed_left = left_sum - left_baseline;
-			if (summed_left < 0) {
-				summed_left = 0;
-			}
-			
-			summed_left = summed_left * HundredPercentThresh / left_max_value;
+			summed_left = left_sum; //Calibration done in the firmware now
 			
 			//Lets just use raw values here
 			adjusted_left_fs0 = fs0;
@@ -148,22 +109,8 @@ public class StaticDynamicCalibration {
 			int i;
 			int right_sum = fs0+fs1+fs2; //All sensor should already be baselined by the hardware and should have values between 0-255
 			
-			if ( (do_cal_right & 0x1) > 0) {
-				do_cal_right &= ~0x1;  //Clear store max flag
-				right_max_value = right_sum; //Store max value
-			}
-			
-			if ( (do_cal_left & 0x2) > 0) {
-				do_cal_left &= ~0x2;  //Clear store baseline flag
-				right_baseline = right_sum; //Store baseline value
-			}
-			
-			summed_right = right_sum - right_baseline;
-			if (summed_right < 0) {
-				summed_right = 0;
-			}
-			
-			summed_right = summed_right * HundredPercentThresh / right_max_value;
+						
+			summed_right = right_sum;
 						
 			adjusted_right_fs0 = fs0;
 			adjusted_right_fs1 = fs1;
