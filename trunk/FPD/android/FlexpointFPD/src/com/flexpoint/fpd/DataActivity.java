@@ -130,6 +130,8 @@ public class DataActivity extends Activity
 		private FootView footView;
 		private BarView  barView;
 		private Button   buttonReset;
+		private Button   buttonCalLeft;
+		private Button   buttonCalRight;
 		private String statusText = "Waiting for devices....";
 				
 		StaticDynamicCalibration calibrator = new StaticDynamicCalibration();
@@ -158,9 +160,21 @@ public class DataActivity extends Activity
 				}
 			});
 			
-						
+			buttonCalLeft = (Button)rootView.findViewById(R.id.buttonCalLeft);
+			buttonCalLeft.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					
+				}
+			});			
 			
-			
+			buttonCalRight = (Button)rootView.findViewById(R.id.buttonCalRight);
+			buttonCalRight.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					
+				}
+			});	
 			
 			
 			return rootView;
