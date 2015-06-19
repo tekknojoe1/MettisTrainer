@@ -35,7 +35,7 @@ public class DataActivity extends Activity
 	private BleFPDIdentity identity;	
 	private SlideDirector slideDirector;
 	private Timer updateTimer;
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -133,6 +133,7 @@ public class DataActivity extends Activity
 		private Button   buttonCalLeft;
 		private Button   buttonCalRight;
 		private String statusText = "Waiting for devices....";
+		private int ButtonState = 0;
 				
 		StaticDynamicCalibration calibrator = new StaticDynamicCalibration();
 		
@@ -156,7 +157,15 @@ public class DataActivity extends Activity
 			buttonReset.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					barView.reset();
+					ButtonState = ~ButtonState;
+					if (ButtonState != 0) {
+						buttonReset.setText("stop");
+					} else {
+						buttonReset.setText("start");
+					}
+					
+					barView.reset(ButtonState);
+					
 				}
 			});
 			
