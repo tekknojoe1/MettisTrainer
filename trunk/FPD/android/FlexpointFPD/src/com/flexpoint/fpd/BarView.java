@@ -20,6 +20,7 @@ public class BarView extends ImageView {
 	private float rightMaxValue;
 	private float barWidth;
 	private float xOffset;
+	private int trackState = 0;
 	
 	private boolean paintReady;
 	
@@ -50,17 +51,21 @@ public class BarView extends ImageView {
 	
 	public void setLeftValue(int v) {
 		leftValue = v;  //in percent where 384 = 100% (128*3)
-		if (leftValue > leftMaxValue)
+		if ( (leftValue > leftMaxValue) && (trackState != 0) )
 			leftMaxValue = leftValue;
 	}
 	public void setRightValue(int v) {
 		rightValue = v;
-		if (rightValue > rightMaxValue)
+		if ( (rightValue > rightMaxValue) && (trackState != 0) )
 			rightMaxValue = rightValue;
 	}
-	public void reset()	{
-		leftMaxValue = 0.0f;
-		rightMaxValue = 0.0f;
+	public void reset(int t)	{
+		if (t != 0) {
+			leftMaxValue = 0.0f;
+			rightMaxValue = 0.0f;
+		}
+		
+		trackState = t;
 	}
 	
 	private void setupPaint(int w, int h) {
@@ -70,7 +75,7 @@ public class BarView extends ImageView {
 		barWidth = (float)w/3.0f;
 		xOffset  = barWidth/4;
 		
-		reset();
+		reset(1);
 		
 		paintReady = true;
 	}
