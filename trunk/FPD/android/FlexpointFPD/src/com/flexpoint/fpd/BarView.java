@@ -114,8 +114,24 @@ public class BarView extends ImageView {
 			meterPaint
 			);
 		
-		final int left_percent  = (int)((leftMaxValue * 100.f)/HundredPercentThresh);
-		final int right_percent = (int)((rightMaxValue * 100.f)/HundredPercentThresh);
+		
+		
+		final int leftMax_percent  = (int)((leftMaxValue * 100.f)/HundredPercentThresh);
+		final int rightMax_percent = (int)((rightMaxValue * 100.f)/HundredPercentThresh);
+		
+		canvas.drawText(
+			"max " + Integer.toString(leftMax_percent) + "%",
+			leftX+((barWidth-textSize)/4), textSize/2,
+			textPaint
+			);
+		canvas.drawText(
+			"max " + Integer.toString(rightMax_percent) + "%",
+			rightX+((barWidth-textSize)/4), textSize/2,
+			textPaint
+			);
+		
+		final int left_percent  = (int)((leftValue * 100.f)/HundredPercentThresh);
+		final int right_percent = (int)((rightValue * 100.f)/HundredPercentThresh);
 		
 		canvas.drawText(
 			Integer.toString(left_percent) + "%",
@@ -126,6 +142,7 @@ public class BarView extends ImageView {
 			Integer.toString(right_percent) + "%",
 			rightX+((barWidth-textSize)/2), height-textSize,
 			textPaint
-			);
+		);
+		
 	}
 }
