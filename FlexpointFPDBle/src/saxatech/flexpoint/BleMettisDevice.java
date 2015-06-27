@@ -1,7 +1,9 @@
 package saxatech.flexpoint;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -100,6 +102,17 @@ public class BleMettisDevice {
 		return bleDeviceGattCallback.startData();
 	}
 	
+	public boolean setDataCharacteristic(
+		byte[] data
+		)
+	{
+		if (bluetoothGatt == null)
+			return false;
+		return bleDeviceGattCallback.setDataCharacteristic(
+			bluetoothGatt, data
+			);
+	}
+	
 	private ConnectParams connectParams;
 	private BluetoothGatt bluetoothGatt;
 	private BleDeviceGattCallback bleDeviceGattCallback;
@@ -134,7 +147,9 @@ public class BleMettisDevice {
 	private class BleDeviceGattCallback extends BluetoothGattCallback {
 		private final ConnectCallback connectCallback;
 		private final DataCallback dataCallback;
+		private final BleCommandQueue commandQueue;
 		private boolean setupDone;
+		private boolean connected;
 		
 		private BluetoothGattService dataService;
 		
@@ -145,6 +160,7 @@ public class BleMettisDevice {
 		{
 			this.connectCallback = connectCallback;
 			this.dataCallback = dataCallback;
+			this.commandQueue = new BleCommandQueue();
 		}
 		
 		public boolean startData() {
@@ -206,6 +222,19 @@ public class BleMettisDevice {
 			onConnected();
 		}
 		
+		@Override
+		public void onCharacteristicRead(
+			BluetoothGatt gatt,
+			BluetoothGattCharacteristic characteristic,
+			int status
+			)
+		{
+			
+			BleCommand command = commandQueue.get();
+			if (command != null)
+				command.run(gatt);			
+		}
+		
 		public void onCharacteristicChanged(
 			BluetoothGatt gatt,
 			BluetoothGattCharacteristic characteristic
@@ -244,6 +273,10 @@ public class BleMettisDevice {
 			else if (DATA_CHAR_UUID.equals(characteristic.getUuid() )) {
 				LogD("DataService characteristic changed");
 			}
+			
+			BleCommand command = commandQueue.get();
+			if (command != null)
+				command.run(gatt);			
 		}
 		@Override
 		public void onDescriptorWrite (
@@ -258,23 +291,101 @@ public class BleMettisDevice {
 			else {
 				LogD("DataService descriptor changed");
 			}
+			
+			BleCommand command = commandQueue.get();
+			if (command != null)
+				command.run(gatt);
 		}
 		
 		private void onConnected() {
 			setupDone = true;
+			connected = true;
 			connectCallback.onConnected();
 		}
 		private void onDisconnected() {
+			connected = false;
 			if (setupDone)
 				connectCallback.onDisconnected();
 			else
 				onConnectFailed(CONNECT_ERROR_IO);
 		}
 		private void onConnectFailed(int connectError) {
+			connected = false;
 			if (!setupDone) {
 				setupDone = true;
 				connectCallback.onFailed(connectError);
 			}
+		}
+		
+		public boolean setDataCharacteristic(
+			BluetoothGatt gatt,
+			final byte[] data
+			)
+		{
+			if (!connected)
+				return false;
+			
+			commandQueue.put(gatt, new BleCommand() {
+			public void run(
+				BluetoothGatt gatt
+				)
+			{
+				final BluetoothGattCharacteristic c =
+					dataService.getCharacteristic(
+						DATA_CHAR_UUID
+						);
+				c.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+				c.setValue(data);
+				gatt.writeCharacteristic(c);
+			}
+			});
+			
+			return true;
+		}
+	}
+	
+	private static interface BleCommand {
+		public void run(
+			BluetoothGatt gatt
+			);
+	}
+	
+	private static class BleCommandQueue {
+		private class Q extends LinkedList<BleCommand> {
+			public int size;			
+		}
+		private Q q = new Q();
+		
+		public void put(
+			BluetoothGatt gatt,
+			BleCommand command
+			)
+		{
+			boolean runNow = false;
+			synchronized(q) {
+				++q.size;
+				if (q.size == 1)
+					runNow = true;
+				else {
+					q.add(command);
+				}
+			}
+			if (runNow)
+				command.run(gatt);
+		}
+		
+		public BleCommand get()
+		{
+			BleCommand command = null;
+			synchronized(q) {
+				if (q.size == 1)
+					q.size = 0;
+				else {
+					--q.size;
+					command = q.poll();
+				}
+			}
+			return command;
 		}
 	}
 	
