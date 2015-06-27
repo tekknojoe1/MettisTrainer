@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
-import saxatech.flexpoint.BleFPDDeviceGroup;
+import saxatech.flexpoint.BleMettisDeviceGroup;
 
 public class InsolesFragment extends Fragment {
-	public static final int DEVICE_TYPE_LEFT_SHOE  = BleFPDDeviceGroup.DEVICE_TYPE_LEFT_SHOE;
-	public static final int DEVICE_TYPE_RIGHT_SHOE = BleFPDDeviceGroup.DEVICE_TYPE_RIGHT_SHOE;
+	public static final int DEVICE_TYPE_LEFT_SHOE  = BleMettisDeviceGroup.DEVICE_TYPE_LEFT_SHOE;
+	public static final int DEVICE_TYPE_RIGHT_SHOE = BleMettisDeviceGroup.DEVICE_TYPE_RIGHT_SHOE;
 	
 	public static interface ActivityCallbacks {
 		public void onConnected();
@@ -24,7 +24,8 @@ public class InsolesFragment extends Fragment {
 		public void onSensor(
 			int deviceType,
 			long timeStampNsec,
-			int fs0, int fs1, int fs2
+			int medial, int lateral, int heal,
+			int cadence, int contactTime, int impactForce
 			);
 	}
 	
@@ -37,7 +38,7 @@ public class InsolesFragment extends Fragment {
 	private String leftInsoleMacAddress;
 	private String rightInsoleMacAddress;
 	private ActivityCallbacks activityCallbacks;
-	private BleFPDDeviceGroup bleDevices;
+	private BleMettisDeviceGroup bleDevices;
 	
 	public void setInsoles(
 		String leftInsoleMacAddress,
@@ -79,13 +80,11 @@ public class InsolesFragment extends Fragment {
 		bluetoothLeftShoe = bluetoothAdapter.getRemoteDevice(leftInsoleMacAddress);		
 		bluetoothRightShoe = bluetoothAdapter.getRemoteDevice(rightInsoleMacAddress);
 		
-		bleDevices = new BleFPDDeviceGroup();
+		bleDevices = new BleMettisDeviceGroup();
 		final boolean rv = bleDevices.connect(
 			context,
-			handler,
 			bluetoothLeftShoe,
 			bluetoothRightShoe,
-			null,
 			false,
 			new BleDevConnectCallback(),
 			new BleDevDataCallback()
@@ -117,7 +116,7 @@ public class InsolesFragment extends Fragment {
 			bleDevices.close();
 	}
 	
-	private class BleDevConnectCallback implements BleFPDDeviceGroup.ConnectCallback {
+	private class BleDevConnectCallback implements BleMettisDeviceGroup.ConnectCallback {
 		@Override
 		public void onConnected() {
 			if (activityCallbacks == null)
@@ -138,31 +137,39 @@ public class InsolesFragment extends Fragment {
 			if (activityCallbacks == null)
 				return;
 			activityCallbacks.onFailed(
-				BleFPDDeviceGroup.connectErrorString(connect_error)
+				BleMettisDeviceGroup.connectErrorString(connect_error)
 				);
 		}
 	}
-	private class BleDevDataCallback implements BleFPDDeviceGroup.DataCallback {
+	private class BleDevDataCallback implements BleMettisDeviceGroup.DataCallback {
 		@Override
 		public void onData(
 			int deviceType,
 			long timeStamp,
-			int fs0, int fs1, int fs2,
-			int fs3, int fs4,
-			int acX, int acY, int acZ,
-			int mgX, int mgY, int mgZ
+			int medial, int lateral, int heal,
+			int cadence, int contactTime, int impactForce
 			)
 		{
 			if (activityCallbacks == null)
 				return;
-			activityCallbacks.onSensor(deviceType, timeStamp, fs0, fs1, fs2);
+			activityCallbacks.onSensor(
+				deviceType, timeStamp,
+				medial, lateral, heal,
+				cadence, contactTime, impactForce
+				);
 		}
 		@Override
-		public void onBatteryStatus(int deviceType, int batteryLevel,
-			int maxBatteryLevel, boolean isCharging
+		public void onBattStatus(
+			int deviceType, int batteryLevel,
+			int maxBatteryLevel
 			)
-		{
-			// TODO Auto-generated method stub			
+		{			
+		}
+		@Override
+		public void onInfo(
+			int deviceType, String version
+			)
+		{	
 		}
 	}
 }

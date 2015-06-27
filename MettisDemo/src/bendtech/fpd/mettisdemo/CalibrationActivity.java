@@ -298,20 +298,20 @@ public class CalibrationActivity extends Activity implements InsolesFragment.Act
 	public void onSensor(
 			int deviceType,
 			long timeStampNsec,
-			int fs0, int fs1,
-			int fs2
+			int medial, int lateral, int heal,
+			int cadence, int contactTime, int impactForce
 			)
 	{
 		switch (deviceType) {
 		case InsolesFragment.DEVICE_TYPE_LEFT_SHOE:
-			calibrationFragment.setLeftSensors(fs0, fs1, fs2);
+			calibrationFragment.setLeftSensors(medial, lateral, heal);
 			if (calibrationRunning)
-				calibratorLeft.setSensors(fs0, fs1, fs2);
+				calibratorLeft.setSensors(medial, lateral, heal);
 			break;
 		case InsolesFragment.DEVICE_TYPE_RIGHT_SHOE:
-			calibrationFragment.setRightSensors(fs0, fs1, fs2);
+			calibrationFragment.setRightSensors(medial, lateral, heal);
 			if (calibrationRunning)
-				calibratorRight.setSensors(fs0, fs1, fs2);
+				calibratorRight.setSensors(medial, lateral, heal);
 			break;
 		}
 	}
