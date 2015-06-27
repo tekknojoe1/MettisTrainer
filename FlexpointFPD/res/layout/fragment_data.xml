@@ -58,12 +58,11 @@
         
         
     </FrameLayout>
-    
+
     <com.flexpoint.fpd.BarView
         android:id="@+id/barView1"
-        
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>
