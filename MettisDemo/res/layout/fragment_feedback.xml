@@ -1,0 +1,280 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backgrid"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="bendtech.fpd.mettisdemo.FeedbackFragment" >
+
+    <TextView
+        android:id="@+id/textStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/imageLeftFoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mettis_foot_left" />
+            
+            <bendtech.fpd.mettisdemo.SensorPadView
+                android:id="@+id/sensorLeftMedial"
+                android:layout_marginTop="36dp"
+                android:layout_marginLeft="58dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                />
+            
+            <bendtech.fpd.mettisdemo.SensorPadView
+                android:id="@+id/sensorLeftLat"
+                android:layout_marginTop="70dp"
+                android:layout_marginLeft="12dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                />
+            
+            <bendtech.fpd.mettisdemo.SensorPadView
+                android:id="@+id/sensorLeftHeel"
+                android:layout_marginTop="232dp"
+                android:layout_marginLeft="24dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                />
+            
+            <TextView
+		        android:id="@+id/textLeftMedial"
+		        android:layout_marginTop="36dp"
+                android:layout_marginLeft="58dp"
+		        android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+		        android:fontFamily="sans-serif-condensed"
+		        android:textStyle="bold"
+		        android:textSize="20sp"
+		        android:textColor="#FFFFFFFF"		        
+		        />
+            
+            <TextView
+		        android:id="@+id/textLeftLat"
+		        android:layout_marginTop="70dp"
+                android:layout_marginLeft="12dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+		        android:fontFamily="sans-serif-condensed"
+		        android:textStyle="bold"
+		        android:textSize="20sp"
+		        android:textColor="#FFFFFFFF"		        
+		        />
+            
+            <TextView
+		        android:id="@+id/textLeftHeel"
+		        android:layout_marginTop="232dp"
+                android:layout_marginLeft="24dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+		        android:fontFamily="sans-serif-condensed"
+		        android:textStyle="bold"
+		        android:textSize="22sp"
+		        android:textColor="#FFFFFFFF"		        
+		        />
+
+        </FrameLayout>
+
+        <LinearLayout
+        	android:layout_width="wrap_content"
+        	android:layout_height="match_parent"        
+        	android:orientation="vertical" >
+                    
+		    <ImageView
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="150dp"
+		        android:layout_gravity="center"
+		        android:src="@drawable/mini_logo" />
+		    <FrameLayout
+            	android:layout_width="wrap_content"
+            	android:layout_height="100dp" >
+		    	
+		    	<bendtech.fpd.mettisdemo.CadenceView
+                	android:id="@+id/cadenceRing"
+                	android:layout_marginTop="12dp"
+                	android:layout_gravity="center"
+                	android:layout_width="54dp"
+                	android:layout_height="54dp"
+                	/>
+		    	
+		    	<TextView
+			        android:id="@+id/textCadence"
+			        android:layout_marginTop="36dp"
+			        android:layout_width="54dp"
+	                android:layout_height="54dp"
+	                android:gravity="center"
+			        android:fontFamily="sans-serif-condensed"
+			        android:textStyle="bold"
+			        android:textSize="24sp"
+			        android:textColor="#FFFFFFFF"   
+		        />
+		    	
+		    </FrameLayout>
+        
+        </LinearLayout>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/imageRightFoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mettis_foot_right" />
+            
+            <bendtech.fpd.mettisdemo.SensorPadView
+                android:id="@+id/sensorRightMedial"
+                android:layout_marginTop="36dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="58dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                />
+            
+            <bendtech.fpd.mettisdemo.SensorPadView
+                android:id="@+id/sensorRightLat"
+                android:layout_marginTop="70dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="12dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                />
+            
+            <bendtech.fpd.mettisdemo.SensorPadView
+                android:id="@+id/sensorRightHeel"
+                android:layout_marginTop="232dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="24dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                />
+            
+            <TextView
+		        android:id="@+id/textRightMedial"
+		        android:layout_marginTop="36dp"
+		        android:layout_gravity="right"
+                android:layout_marginRight="58dp"
+		        android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+		        android:fontFamily="sans-serif-condensed"
+		        android:textStyle="bold"
+		        android:textSize="20sp"
+		        android:textColor="#FFFFFFFF"		        
+		        />
+            
+            <TextView
+		        android:id="@+id/textRightLat"
+		        android:layout_marginTop="70dp"
+		        android:layout_gravity="right"
+                android:layout_marginRight="12dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+		        android:fontFamily="sans-serif-condensed"
+		        android:textStyle="bold"
+		        android:textSize="20sp"
+		        android:textColor="#FFFFFFFF"		        
+		        />
+            
+            <TextView
+		        android:id="@+id/textRightHeel"
+		        android:layout_marginTop="232dp"
+		        android:layout_gravity="right"
+                android:layout_marginRight="24dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+		        android:fontFamily="sans-serif-condensed"
+		        android:textStyle="bold"
+		        android:textSize="22sp"
+		        android:textColor="#FFFFFFFF"		        
+		        />
+            
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp"
+            android:gravity="left"
+		    android:fontFamily="sans-serif"
+		    android:textStyle="bold"
+		    android:textSize="20sp"
+		    android:textColor="#FFFFFF00"
+            android:text="POOR"
+             />
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="16dp"
+            android:gravity="right"
+		    android:fontFamily="sans-serif"
+		    android:textStyle="bold"
+		    android:textSize="20sp"
+		    android:textColor="#FFFFFF00"
+            android:text="OPTIMAL"
+             />
+
+    </LinearLayout>
+    
+    <bendtech.fpd.mettisdemo.StrikeProgressView
+        android:id="@+id/strikeProgress"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+    	/>
+    
+    <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="12dp"
+       android:gravity="center"
+	   android:fontFamily="sans-serif"
+	   android:textStyle="bold"
+	   android:textSize="20sp"
+	   android:textColor="#FFFFFF00"
+       android:text="AVERAGE FOOT STRIKE"
+       />
+
+</LinearLayout>
