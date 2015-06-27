@@ -132,6 +132,25 @@ public class DeviceFragment extends Fragment {
 			bleDevices.close();
 	}
 	
+	public boolean setLeftDataCharacteristic(
+		byte[] data
+		)
+	{
+		return bleDevices.setDataCharacteristic(
+			BleMettisDeviceGroup.DEVICE_TYPE_LEFT_SHOE,
+			data
+			);
+	}
+	public boolean setRightDataCharacteristic(
+		byte[] data
+		)
+	{
+		return bleDevices.setDataCharacteristic(
+			BleMettisDeviceGroup.DEVICE_TYPE_RIGHT_SHOE,
+			data
+			);
+	}
+			
 	private void failedInit(final String error) {
 		handler.post(new Runnable() {
 			public void run() {

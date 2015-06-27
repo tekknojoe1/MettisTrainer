@@ -1,5 +1,6 @@
 package com.flexpoint.fpd;
 
+import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -173,7 +174,19 @@ public class DataActivity extends Activity
 			buttonCalLeft.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					
+					DataActivity d = (DataActivity)getActivity();
+					if (d != null) {
+						{
+							String s = "CALMAX";
+							byte[] data = s.getBytes(Charset.forName("UTF-8"));
+							d.deviceFragment.setLeftDataCharacteristic(data);
+						}
+						{
+							String s = "CALMIN";
+							byte[] data = s.getBytes(Charset.forName("UTF-8"));
+							d.deviceFragment.setRightDataCharacteristic(data);
+						}
+					}
 				}
 			});			
 			
@@ -181,7 +194,19 @@ public class DataActivity extends Activity
 			buttonCalRight.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					
+					DataActivity d = (DataActivity)getActivity();
+					if (d != null) {
+						{
+							String s = "CALMAX";
+							byte[] data = s.getBytes(Charset.forName("UTF-8"));
+							d.deviceFragment.setRightDataCharacteristic(data);
+						}
+						{
+							String s = "CALMIN";
+							byte[] data = s.getBytes(Charset.forName("UTF-8"));
+							d.deviceFragment.setLeftDataCharacteristic(data);
+						}
+					}
 				}
 			});	
 			

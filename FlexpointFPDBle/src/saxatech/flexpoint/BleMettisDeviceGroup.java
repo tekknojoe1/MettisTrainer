@@ -163,7 +163,23 @@ public class BleMettisDeviceGroup {
 			deviceRight = null;
 		}
 	}
-		
+	
+	public boolean setDataCharacteristic(
+		int deviceType,
+		byte[] data
+		)
+	{
+		if (deviceType == DEVICE_TYPE_LEFT_SHOE) {
+			if (deviceLeft != null)
+				return deviceLeft.mettisDevice.setDataCharacteristic(data);
+		}
+		else if (deviceType == DEVICE_TYPE_RIGHT_SHOE) {
+			if (deviceRight != null)
+				return deviceRight.mettisDevice.setDataCharacteristic(data);
+		}
+		return false;
+	}
+			
 	private static class DeviceInst {
 		public int deviceType;       
 		public BleMettisDevice mettisDevice;
