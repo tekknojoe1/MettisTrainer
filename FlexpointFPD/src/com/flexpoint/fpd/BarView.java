@@ -121,12 +121,12 @@ public class BarView extends ImageView {
 		
 		canvas.drawText(
 			"max " + Integer.toString(leftMax_percent) + "%",
-			leftX+((barWidth-textSize)/4), textSize/2,
+			leftX+((barWidth-textSize)/4), textSize,
 			textPaint
 			);
 		canvas.drawText(
 			"max " + Integer.toString(rightMax_percent) + "%",
-			rightX+((barWidth-textSize)/4), textSize/2,
+			rightX+((barWidth-textSize)/4), textSize,
 			textPaint
 			);
 		
@@ -135,12 +135,12 @@ public class BarView extends ImageView {
 		
 		canvas.drawText(
 			Integer.toString(left_percent) + "%",
-			leftX+((barWidth-textSize)/2), height-textSize,
+			leftX+((barWidth-textSize)/2), height,
 			textPaint
 			);
 		canvas.drawText(
 			Integer.toString(right_percent) + "%",
-			rightX+((barWidth-textSize)/2), height-textSize,
+			rightX+((barWidth-textSize)/2), height,
 			textPaint
 		);
 		
