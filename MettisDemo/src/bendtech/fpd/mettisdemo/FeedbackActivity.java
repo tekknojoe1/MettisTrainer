@@ -138,9 +138,9 @@ public class FeedbackActivity extends Activity implements InsolesFragment.Activi
 			a = (avgRightStrike + avgLeftStrike) / 2;
 		
 		if (a < 20 || a > 58)
-			--strikeValue;
+			strikeValue -= 10;
 		else
-			++strikeValue;
+			strikeValue += 10;
 		
 		if (strikeValue > 100)
 			strikeValue = 100;
@@ -491,7 +491,7 @@ public class FeedbackActivity extends Activity implements InsolesFragment.Activi
 			}
 			
 			final int totalStrike = s0 + s1 + s2;
-			final int totalStrikeThreshold = (int)(0.95f * (stanceS0 + stanceS1 + stanceS2));
+			final int totalStrikeThreshold = (int)(0.5f * (stanceS0 + stanceS1 + stanceS2));
 			final int heelStrike = s2;
 			
 			if (totalStrike >= totalStrikeThreshold) {
