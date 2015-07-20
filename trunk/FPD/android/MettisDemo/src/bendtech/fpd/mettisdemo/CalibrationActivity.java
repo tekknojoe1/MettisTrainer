@@ -243,12 +243,19 @@ public class CalibrationActivity extends Activity implements InsolesFragment.Act
 	}
 	
 	private void doneCalibrating() {
+		//settings.setLeftStances(
+		//	leftStanceS0, leftStanceS1, leftStanceS2
+		//	);
+		//settings.setRightStances(
+		//	rightStanceS0, rightStanceS1, rightStanceS2
+		//	);
+		
 		settings.setLeftStances(
-			leftStanceS0, leftStanceS1, leftStanceS2
-			);
+				128, 128, 128
+				);
 		settings.setRightStances(
-			rightStanceS0, rightStanceS1, rightStanceS2
-			);
+				128, 128, 128
+				);
 		
 		Intent intent = new Intent(this, FeedbackActivity.class);
 		startActivity(intent);
