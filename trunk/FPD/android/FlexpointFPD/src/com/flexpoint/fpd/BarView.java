@@ -133,16 +133,16 @@ public class BarView extends ImageView {
 		final int left_percent  = (int)((leftValue * 100.f)/HundredPercentThresh);
 		final int right_percent = (int)((rightValue * 100.f)/HundredPercentThresh);
 		
-		canvas.drawText(
-			Integer.toString(left_percent) + "%",
-			leftX+((barWidth-textSize)/2), height,
-			textPaint
-			);
-		canvas.drawText(
-			Integer.toString(right_percent) + "%",
-			rightX+((barWidth-textSize)/2), height,
-			textPaint
-		);
+		//canvas.drawText(
+			//Integer.toString(left_percent) + "%",
+			//leftX+((barWidth-textSize)/2), height,
+			//textPaint
+		//	);
+		//canvas.drawText(
+			//Integer.toString(right_percent) + "%",
+			//rightX+((barWidth-textSize)/2), height,
+			//textPaint
+		//);
 		
 	}
 }
